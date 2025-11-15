@@ -5,6 +5,7 @@
 
 import type {
   User,
+  AuthTokens,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -72,8 +73,8 @@ export const useAuth = () => {
       const response = await api.post<LoginResponse>('/auth/login', credentials)
 
       // Guardar tokens y usuario
-      authToken.value = response.data.tokens.accessToken
-      refreshToken.value = response.data.tokens.refreshToken
+      authToken.value = response.data.accessToken
+      refreshToken.value = response.data.refreshToken
       user.value = response.data.user
 
       return { success: true, user: response.data.user }

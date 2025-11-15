@@ -25,6 +25,10 @@ onMounted(() => {
   const handleScroll = () => {
     isScrolled.value = window.scrollY > 10
   }
+
+  // Verificar posición inicial al cargar
+  handleScroll()
+
   window.addEventListener('scroll', handleScroll)
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
@@ -34,10 +38,10 @@ onMounted(() => {
 
 <template>
   <header
-    class="sticky top-0 z-50 w-full border-b transition-all duration-300"
+    class="sticky top-0 z-50 w-full transition-all duration-500"
     :class="isScrolled
-      ? 'border-gray-200 bg-white/95 backdrop-blur-xl shadow-lg shadow-black/5'
-      : 'border-transparent bg-white/80 backdrop-blur-sm'"
+      ? 'border-b border-gray-200 bg-white backdrop-blur-xl shadow-lg shadow-black/5'
+      : 'border-b border-transparent bg-transparent'"
   >
     <nav class="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
       <div class="flex items-center justify-between h-16 lg:h-20">
@@ -66,27 +70,30 @@ onMounted(() => {
         </div>
 
         <!-- CTA Buttons -->
-        <div class="hidden lg:flex lg:items-center lg:space-x-4">
+        <div class="hidden lg:flex lg:items-center lg:space-x-3">
           <template v-if="isAuthenticated">
             <NuxtLink to="/dashboard">
-              <Button variant="ghost" size="sm">
+              <button class="px-5 py-2.5 text-[#0A1F44] font-semibold hover:text-[#D4AF37] transition-colors duration-300">
                 Mi Cuenta
-              </Button>
+              </button>
             </NuxtLink>
-            <Button variant="outline" size="sm" @click="handleLogout">
+            <button
+              @click="handleLogout"
+              class="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-[#0A1F44] hover:text-[#0A1F44] transition-all duration-300"
+            >
               Salir
-            </Button>
+            </button>
           </template>
           <template v-else>
             <NuxtLink to="/auth/login">
-              <Button variant="ghost" size="sm">
+              <button class="px-5 py-2.5 text-[#0A1F44] font-semibold hover:text-[#D4AF37] transition-colors duration-300">
                 Iniciar Sesión
-              </Button>
+              </button>
             </NuxtLink>
             <NuxtLink to="/auth/register">
-              <Button size="sm" class="bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-[#0A1F44]">
-                Comenzar
-              </Button>
+              <button class="px-6 py-2.5 bg-[#D4AF37] text-[#0A1F44] font-bold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300 hover:shadow-lg">
+                Comenzar Ahora
+              </button>
             </NuxtLink>
           </template>
         </div>
@@ -120,27 +127,30 @@ onMounted(() => {
             {{ item.name }}
           </NuxtLink>
 
-          <div class="pt-4 border-t border-gray-200 space-y-2">
+          <div class="pt-4 border-t border-gray-200 space-y-3 px-4">
             <template v-if="isAuthenticated">
-              <NuxtLink to="/dashboard" @click="isMenuOpen = false">
-                <Button variant="outline" class="w-full">
+              <NuxtLink to="/dashboard" @click="isMenuOpen = false" class="block">
+                <button class="w-full px-6 py-3 border-2 border-[#0A1F44] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300">
                   Mi Cuenta
-                </Button>
+                </button>
               </NuxtLink>
-              <Button variant="ghost" class="w-full" @click="handleLogout">
+              <button
+                @click="handleLogout"
+                class="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-red-500 hover:text-red-500 transition-all duration-300"
+              >
                 Salir
-              </Button>
+              </button>
             </template>
             <template v-else>
-              <NuxtLink to="/auth/login" @click="isMenuOpen = false">
-                <Button variant="outline" class="w-full">
+              <NuxtLink to="/auth/login" @click="isMenuOpen = false" class="block">
+                <button class="w-full px-6 py-3 border-2 border-[#0A1F44] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300">
                   Iniciar Sesión
-                </Button>
+                </button>
               </NuxtLink>
-              <NuxtLink to="/auth/register" @click="isMenuOpen = false">
-                <Button class="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-[#0A1F44]">
-                  Comenzar
-                </Button>
+              <NuxtLink to="/auth/register" @click="isMenuOpen = false" class="block">
+                <button class="w-full px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-bold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300 shadow-md hover:shadow-xl">
+                  Comenzar Ahora
+                </button>
               </NuxtLink>
             </template>
           </div>

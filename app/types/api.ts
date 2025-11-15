@@ -46,8 +46,9 @@ export interface AuthTokens {
 }
 
 export interface LoginResponse {
+  accessToken: string
+  refreshToken: string
   user: User
-  tokens: AuthTokens
 }
 
 export interface RegisterRequest {
@@ -80,4 +81,196 @@ export interface ResetPasswordRequest {
 export interface ChangePasswordRequest {
   currentPassword: string
   newPassword: string
+}
+
+// Tipos para el sistema de POA (Power of Attorney)
+export type POAType = 'standard' | 'durable' | 'springing'
+
+export type POAStatus =
+  | 'draft'
+  | 'pending'
+  | 'in_review'
+  | 'approved'
+  | 'rejected'
+  | 'notarized'
+  | 'activated'
+  | 'executed'
+  | 'completed'
+  | 'cancelled'
+
+export interface POA {
+  id: string
+  clientId: string
+  assignedAdminId?: string
+
+  // Información del POA
+  type: POAType
+  status: POAStatus
+
+  // Datos del cliente
+  clientFullName: string
+  clientAddress: string
+  clientIdentification: string
+
+  // Instrucciones confidenciales
+  instructions: any
+  beneficiaries: any[]
+  activationTriggers: string[]
+
+  // Seguimiento
+  submittedAt?: string
+  reviewedAt?: string
+  approvedAt?: string
+  notarizedAt?: string
+  activatedAt?: string
+  executedAt?: string
+
+  // Notas
+  clientNotes?: string
+  adminNotes?: string
+  rejectionReason?: string
+
+  // Auditoría
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+}
+
+export interface CreatePOARequest {
+  type: POAType
+  clientFullName: string
+  clientAddress: string
+  clientIdentification: string
+  instructions: any
+  beneficiaries: any[]
+  activationTriggers: string[]
+  clientNotes?: string
+}
+
+export interface UpdatePOARequest {
+  type?: POAType
+  clientFullName?: string
+  clientAddress?: string
+  clientIdentification?: string
+  instructions?: any
+  beneficiaries?: any[]
+  activationTriggers?: string[]
+  clientNotes?: string
+}
+
+export type DocumentType =
+  | 'identification'
+  | 'proof_of_address'
+  | 'bank_statement'
+  | 'notarization'
+  | 'activation_proof'
+  | 'other'
+
+export type DocumentStatus = 'pending' | 'approved' | 'rejected'
+
+export interface POADocument {
+  id: string
+  poaId: string
+  type: DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize: number
+  mimeType: string
+  status: DocumentStatus
+  uploadedAt: string
+  reviewedAt?: string
+}
+
+// Tipos para el sistema de usuarios y perfil
+export interface UpdateProfileRequest {
+  firstName?: string
+  lastName?: string
+  phone?: string
+  address?: string
+  city?: string
+  state?: string
+  zipCode?: string
+  country?: string
+  dateOfBirth?: string
+  identificationNumber?: string
+}
+
+export interface SendPhoneOtpRequest {
+  phone: string
+}
+
+export interface VerifyPhoneRequest {
+  otpCode: string
+}
+
+// Tipos para el sistema de notificaciones
+export type NotificationChannel = 'email' | 'sms' | 'whatsapp' | 'push' | 'in_app'
+
+export type NotificationStatus =
+  | 'pending'
+  | 'queued'
+  | 'sending'
+  | 'sent'
+  | 'delivered'
+  | 'failed'
+  | 'bounced'
+  | 'cancelled'
+
+export type NotificationCategory =
+  | 'poa_updates'
+  | 'account'
+  | 'security'
+  | 'payments'
+  | 'marketing'
+  | 'system'
+
+export interface Notification {
+  id: string
+  userId: string
+  channel: NotificationChannel
+  category: NotificationCategory
+  status: NotificationStatus
+  subject?: string
+  body: string
+  metadata?: any
+  scheduledFor?: string
+  sentAt?: string
+  deliveredAt?: string
+  readAt?: string
+  failedAt?: string
+  errorMessage?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface NotificationPreferences {
+  id: string
+  userId: string
+  enabledChannels: NotificationChannel[]
+  quietHoursStart?: string
+  quietHoursEnd?: string
+  categoryPreferences: Record<NotificationCategory, NotificationChannel[]>
+  createdAt: string
+  updatedAt: string
+}
+
+export interface UpdatePreferencesRequest {
+  enabledChannels?: NotificationChannel[]
+  quietHoursStart?: string
+  quietHoursEnd?: string
+  categoryPreferences?: Record<NotificationCategory, NotificationChannel[]>
+}
+
+export interface UpdateCategoryPreferenceRequest {
+  category: NotificationCategory
+  channel: NotificationChannel
+  enabled: boolean
+}
+
+export interface NotificationFilterParams {
+  page?: number
+  limit?: number
+  channel?: NotificationChannel
+  status?: NotificationStatus
+  category?: NotificationCategory
 }

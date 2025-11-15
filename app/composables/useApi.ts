@@ -15,6 +15,39 @@ export const useApi = () => {
   const authToken = useCookie('auth_token')
 
   /**
+   * Extrae mensajes de error del response del backend
+   */
+  const extractErrorMessage = (error: any): string => {
+    // Si el error tiene la estructura estándar del backend
+    if (error.data?.error) {
+      const errorData = error.data.error
+
+      // Si hay múltiples mensajes de validación en details.message (array)
+      if (errorData.details?.message && Array.isArray(errorData.details.message)) {
+        return errorData.details.message.join(', ')
+      }
+
+      // Si hay un mensaje en details
+      if (errorData.details?.message && typeof errorData.details.message === 'string') {
+        return errorData.details.message
+      }
+
+      // Mensaje principal del error
+      if (errorData.message) {
+        return errorData.message
+      }
+    }
+
+    // Errores de red o timeout
+    if (error.message) {
+      return error.message
+    }
+
+    // Error genérico
+    return 'Ha ocurrido un error inesperado'
+  }
+
+  /**
    * Función genérica para hacer peticiones HTTP
    */
   const makeRequest = async <T = any>(
@@ -47,9 +80,20 @@ export const useApi = () => {
       const errorResponse = response as ApiErrorResponse
       throw new Error(errorResponse.error.message)
     } catch (error: any) {
-      // Manejar errores de red o del servidor
-      console.error('API Error:', error)
-      throw error
+      // Extraer mensaje de error apropiado
+      const errorMessage = extractErrorMessage(error)
+
+      console.error('API Error:', {
+        endpoint,
+        message: errorMessage,
+        details: error.data?.error?.details,
+      })
+
+      // Lanzar error con mensaje procesado
+      const processedError = new Error(errorMessage)
+      ;(processedError as any).statusCode = error.statusCode || error.data?.error?.details?.statusCode
+      ;(processedError as any).code = error.data?.error?.code
+      throw processedError
     }
   }
 

@@ -1,5 +1,11 @@
 <script setup lang="ts">
 // Layout por defecto con header y footer
+const { checkAuth } = useAuth()
+
+// Verificar autenticación al montar el layout
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <template>
