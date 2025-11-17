@@ -72,9 +72,14 @@ onMounted(() => {
         <!-- CTA Buttons -->
         <div class="hidden lg:flex lg:items-center lg:space-x-3">
           <template v-if="isAuthenticated">
+            <NuxtLink to="/poa">
+              <button class="px-5 py-2.5 text-[#0A1F44] font-semibold hover:text-[#D4AF37] transition-colors duration-300">
+                Mis POAs
+              </button>
+            </NuxtLink>
             <NuxtLink to="/dashboard">
               <button class="px-5 py-2.5 text-[#0A1F44] font-semibold hover:text-[#D4AF37] transition-colors duration-300">
-                Mi Cuenta
+                Dashboard
               </button>
             </NuxtLink>
             <button
@@ -129,9 +134,14 @@ onMounted(() => {
 
           <div class="pt-4 border-t border-gray-200 space-y-3 px-4">
             <template v-if="isAuthenticated">
+              <NuxtLink to="/poa" @click="isMenuOpen = false" class="block">
+                <button class="w-full px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300">
+                  Mis POAs
+                </button>
+              </NuxtLink>
               <NuxtLink to="/dashboard" @click="isMenuOpen = false" class="block">
                 <button class="w-full px-6 py-3 border-2 border-[#0A1F44] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-all duration-300">
-                  Mi Cuenta
+                  Dashboard
                 </button>
               </NuxtLink>
               <button

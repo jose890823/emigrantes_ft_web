@@ -7,17 +7,25 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { getPoa, submitPoa, cancelPoa, getPoaHistory, getStatusLabel, getStatusColor, getTypeLabel } = usePoa()
+const { getPoa, submitPoa, cancelPoa, getPoaHistory, uploadDocument, getPoaDocuments, deleteDocument, openDocument, downloadDocument, getStatusLabel, getStatusColor, getTypeLabel } = usePoa()
 const toast = useToast()
 
 const poaId = route.params.id as string
 const poa = ref<POA | null>(null)
 const history = ref<any[]>([])
+const documents = ref<any[]>([])
 const isLoading = ref(false)
 const isSubmitting = ref(false)
+const isUploadingDocument = ref(false)
 const showCancelModal = ref(false)
+const showSubmitModal = ref(false)
 const showHistoryModal = ref(false)
+const showUploadModal = ref(false)
+const showDeleteDocumentModal = ref(false)
 const activeTab = ref('info')
+const selectedFile = ref<File | null>(null)
+const documentType = ref('identification')
+const documentToDelete = ref<string | null>(null)
 
 // Cargar POA
 const loadPoa = async () => {
@@ -50,10 +58,114 @@ const loadHistory = async () => {
   }
 }
 
+// Cargar documentos
+const loadDocuments = async () => {
+  try {
+    const result = await getPoaDocuments(poaId)
+    if (result.success && result.data) {
+      documents.value = result.data
+    }
+  } catch (error) {
+    console.error('Error loading documents:', error)
+    toast.error('Error', 'No se pudieron cargar los documentos')
+  }
+}
+
+// Manejar selección de archivo
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0]
+  }
+}
+
+// Subir documento
+const handleUploadDocument = async () => {
+  if (!selectedFile.value) {
+    toast.error('Error', 'Por favor selecciona un archivo')
+    return
+  }
+
+  isUploadingDocument.value = true
+  try {
+    const result = await uploadDocument(poaId, selectedFile.value, documentType.value as any)
+    if (result.success) {
+      toast.success('Documento subido', 'El documento se ha subido correctamente')
+      selectedFile.value = null
+      documentType.value = 'identification'
+      showUploadModal.value = false
+      await loadDocuments()
+    } else {
+      toast.error('Error', result.error || 'No se pudo subir el documento')
+    }
+  } catch (error) {
+    toast.error('Error', 'Ocurrió un error al subir el documento')
+  } finally {
+    isUploadingDocument.value = false
+  }
+}
+
+// Ver documento
+const handleOpenDocument = async (documentId: string) => {
+  try {
+    const result = await openDocument(poaId, documentId)
+    if (!result.success) {
+      toast.error('Error', result.error || 'No se pudo abrir el documento')
+    }
+  } catch (error) {
+    toast.error('Error', 'Ocurrió un error al abrir el documento')
+  }
+}
+
+// Descargar documento
+const handleDownloadDocument = async (documentId: string) => {
+  try {
+    const result = await downloadDocument(poaId, documentId)
+    if (result.success) {
+      toast.success('Descarga iniciada', 'El documento se está descargando')
+    } else {
+      toast.error('Error', result.error || 'No se pudo descargar el documento')
+    }
+  } catch (error) {
+    toast.error('Error', 'Ocurrió un error al descargar el documento')
+  }
+}
+
+// Confirmar eliminación de documento
+const confirmDeleteDocument = (documentId: string) => {
+  documentToDelete.value = documentId
+  showDeleteDocumentModal.value = true
+}
+
+// Eliminar documento
+const handleDeleteDocument = async () => {
+  if (!documentToDelete.value) return
+
+  showDeleteDocumentModal.value = false
+
+  try {
+    const result = await deleteDocument(poaId, documentToDelete.value)
+    if (result.success) {
+      toast.success('Documento eliminado', 'El documento se ha eliminado correctamente')
+      await loadDocuments()
+    } else {
+      toast.error('Error', result.error || 'No se pudo eliminar el documento')
+    }
+  } catch (error) {
+    toast.error('Error', 'Ocurrió un error al eliminar el documento')
+  } finally {
+    documentToDelete.value = null
+  }
+}
+
+// Mostrar modal de confirmación para enviar
+const confirmSubmit = () => {
+  showSubmitModal.value = true
+}
+
 // Enviar a revisión
 const handleSubmit = async () => {
-  if (!confirm('¿Estás seguro de enviar este POA a revisión? No podrás editarlo después.')) return
-
+  showSubmitModal.value = false
   isSubmitting.value = true
   try {
     const result = await submitPoa(poaId, {})
@@ -126,6 +238,7 @@ const getStatusBadgeClasses = (status: string) => {
 
 onMounted(() => {
   loadPoa()
+  loadDocuments()
 })
 </script>
 
@@ -165,7 +278,7 @@ onMounted(() => {
           </NuxtLink>
           <button
             v-if="canSubmit"
-            @click="handleSubmit"
+            @click="confirmSubmit"
             :disabled="isSubmitting"
             class="flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors disabled:opacity-50"
           >
@@ -230,6 +343,21 @@ onMounted(() => {
               >
                 <Icon name="lucide:calendar" class="w-5 h-5 inline-block mr-2" />
                 Timeline
+              </button>
+              <button
+                @click="activeTab = 'documents'"
+                :class="[
+                  'flex-1 py-4 px-6 text-center border-b-2 font-semibold transition-colors',
+                  activeTab === 'documents'
+                    ? 'border-[#D4AF37] text-[#D4AF37]'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                ]"
+              >
+                <Icon name="lucide:paperclip" class="w-5 h-5 inline-block mr-2" />
+                Documentos
+                <span v-if="documents.length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-[#D4AF37] rounded-full">
+                  {{ documents.length }}
+                </span>
               </button>
             </nav>
           </div>
@@ -420,72 +548,352 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Cancel Modal -->
-    <Teleport to="body">
-      <div v-if="showCancelModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-          <div class="text-center mb-6">
-            <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <Icon name="lucide:alert-triangle" class="w-6 h-6 text-red-600" />
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Cancelar POA</h3>
-            <p class="text-gray-600">¿Estás seguro de que deseas cancelar este POA? Esta acción no se puede deshacer.</p>
-          </div>
+            <!-- Documents Tab -->
+            <div v-if="activeTab === 'documents'" class="space-y-6">
+              <!-- Header con botón para subir -->
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Documentos del POA</h3>
+                <button
+                  v-if="canEdit"
+                  @click="showUploadModal = true"
+                  class="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
+                >
+                  <Icon name="lucide:upload" class="w-5 h-5" />
+                  Subir Documento
+                </button>
+              </div>
 
-          <div class="flex gap-3">
-            <button
-              @click="showCancelModal = false"
-              class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              No, mantener
-            </button>
-            <button
-              @click="handleCancel"
-              class="flex-1 py-3 px-4 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
-            >
-              Sí, cancelar
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+              <!-- Lista de documentos -->
+              <div v-if="documents.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div
+                  v-for="doc in documents"
+                  :key="doc.id"
+                  class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-3 flex-1">
+                      <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon name="lucide:file-text" class="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 truncate">{{ doc.fileName || doc.name }}</p>
+                        <p class="text-sm text-gray-500 capitalize">{{ doc.type }}</p>
+                        <p class="text-xs text-gray-400 mt-1">
+                          Subido: {{ new Date(doc.uploadedAt || doc.createdAt).toLocaleDateString() }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        @click="handleOpenDocument(doc.id)"
+                        class="p-2 text-gray-600 hover:text-[#D4AF37] transition-colors"
+                        title="Ver documento"
+                      >
+                        <Icon name="lucide:eye" class="w-5 h-5" />
+                      </button>
+                      <button
+                        @click="handleDownloadDocument(doc.id)"
+                        class="p-2 text-gray-600 hover:text-blue-600 transition-colors"
+                        title="Descargar documento"
+                      >
+                        <Icon name="lucide:download" class="w-5 h-5" />
+                      </button>
+                      <button
+                        v-if="canEdit"
+                        @click="confirmDeleteDocument(doc.id)"
+                        class="p-2 text-gray-600 hover:text-red-600 transition-colors"
+                        title="Eliminar documento"
+                      >
+                        <Icon name="lucide:trash-2" class="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    <!-- History Modal -->
-    <Teleport to="body">
-      <div v-if="showHistoryModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-          <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-              <h3 class="text-xl font-bold text-gray-900">Historial del POA</h3>
-              <button @click="showHistoryModal = false" class="text-gray-500 hover:text-gray-700">
-                <Icon name="lucide:x" class="w-6 h-6" />
-              </button>
-            </div>
-          </div>
-
-          <div class="p-6 overflow-y-auto flex-1">
-            <div v-if="history.length === 0" class="text-center py-8 text-gray-500">
-              No hay historial disponible
-            </div>
-            <div v-else class="space-y-4">
-              <div
-                v-for="(item, index) in history"
-                :key="index"
-                class="bg-gray-50 p-4 rounded-lg"
-              >
-                <p class="font-semibold text-gray-900">{{ item.action }}</p>
-                <p class="text-sm text-gray-600 mt-1">{{ new Date(item.createdAt).toLocaleString() }}</p>
-                <p v-if="item.notes" class="text-sm text-gray-700 mt-2">{{ item.notes }}</p>
+              <!-- Estado vacío -->
+              <div v-else class="text-center py-12">
+                <Icon name="lucide:inbox" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay documentos</h3>
+                <p class="text-gray-500 mb-6">Aún no has subido ningún documento para este POA.</p>
+                <button
+                  v-if="canEdit"
+                  @click="showUploadModal = true"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
+                >
+                  <Icon name="lucide:upload" class="w-5 h-5" />
+                  Subir Primer Documento
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <ConfirmModal
+      :show="showSubmitModal"
+      title="Enviar POA a Revisión"
+      message="¿Estás seguro de enviar este POA a revisión? Una vez enviado, no podrás editarlo hasta que sea aprobado o rechazado."
+      confirm-text="Sí, enviar"
+      cancel-text="No, esperar"
+      type="warning"
+      :is-loading="isSubmitting"
+      @confirm="handleSubmit"
+      @cancel="showSubmitModal = false"
+    />
+
+    <!-- Cancel Confirmation Modal -->
+    <ConfirmModal
+      :show="showCancelModal"
+      title="Cancelar POA"
+      message="¿Estás seguro de que deseas cancelar este POA? Esta acción no se puede deshacer y perderás todo el progreso."
+      confirm-text="Sí, cancelar POA"
+      cancel-text="No, mantener"
+      type="danger"
+      :is-loading="isLoading"
+      @confirm="handleCancel"
+      @cancel="showCancelModal = false"
+    />
+
+    <!-- History Modal -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showHistoryModal"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          @click.self="showHistoryModal = false"
+        >
+          <Transition
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-150"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+          >
+            <div
+              v-if="showHistoryModal"
+              class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col"
+              @click.stop
+            >
+              <!-- Header -->
+              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center">
+                      <Icon name="lucide:history" class="w-5 h-5 text-[#0A1F44]" />
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Historial del POA</h3>
+                  </div>
+                  <button
+                    @click="showHistoryModal = false"
+                    class="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                  >
+                    <Icon name="lucide:x" class="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="p-6 overflow-y-auto flex-1">
+                <!-- Empty state -->
+                <div v-if="history.length === 0" class="flex flex-col items-center justify-center py-12">
+                  <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <Icon name="lucide:inbox" class="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p class="text-gray-500 font-medium">No hay historial disponible</p>
+                  <p class="text-sm text-gray-400 mt-1">Las acciones realizadas aparecerán aquí</p>
+                </div>
+
+                <!-- History items -->
+                <div v-else class="space-y-3">
+                  <div
+                    v-for="(item, index) in history"
+                    :key="index"
+                    class="relative pl-8 pb-6 last:pb-0"
+                  >
+                    <!-- Timeline line -->
+                    <div
+                      v-if="index < history.length - 1"
+                      class="absolute left-2 top-8 bottom-0 w-0.5 bg-gradient-to-b from-[#D4AF37] to-gray-200"
+                    ></div>
+
+                    <!-- Timeline dot -->
+                    <div class="absolute left-0 top-1 w-4 h-4 bg-[#D4AF37] rounded-full border-2 border-white shadow-md"></div>
+
+                    <!-- Content -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-100 hover:shadow-md transition-shadow">
+                      <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1">
+                          <p class="font-semibold text-gray-900">{{ item.action }}</p>
+                          <p class="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                            <Icon name="lucide:clock" class="w-3 h-3" />
+                            {{ new Date(item.createdAt).toLocaleString('es-ES', {
+                              dateStyle: 'medium',
+                              timeStyle: 'short'
+                            }) }}
+                          </p>
+                          <p v-if="item.notes" class="text-sm text-gray-700 mt-2 bg-blue-50 p-3 rounded-md border-l-2 border-blue-500">
+                            {{ item.notes }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                <button
+                  @click="showHistoryModal = false"
+                  class="w-full py-2.5 px-4 bg-[#0A1F44] text-white font-semibold rounded-lg hover:bg-blue-900 transition-colors"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </Transition>
     </Teleport>
+
+    <!-- Upload Document Modal -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showUploadModal"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          @click.self="showUploadModal = false"
+        >
+          <Transition
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-150"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+          >
+            <div
+              v-if="showUploadModal"
+              class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              @click.stop
+            >
+              <!-- Header -->
+              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center">
+                      <Icon name="lucide:upload" class="w-5 h-5 text-[#0A1F44]" />
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Subir Documento</h3>
+                  </div>
+                  <button
+                    @click="showUploadModal = false"
+                    class="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                  >
+                    <Icon name="lucide:x" class="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="p-6 space-y-4">
+                <!-- File Input -->
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Seleccionar Archivo
+                  </label>
+                  <div class="relative">
+                    <input
+                      type="file"
+                      @change="handleFileSelect"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-[#D4AF37] file:text-[#0A1F44]
+                        hover:file:bg-[#0A1F44] hover:file:text-white
+                        file:cursor-pointer file:transition-colors"
+                    />
+                  </div>
+                  <p v-if="selectedFile" class="mt-2 text-sm text-gray-600">
+                    <Icon name="lucide:file" class="w-4 h-4 inline-block mr-1" />
+                    {{ selectedFile.name }}
+                  </p>
+                </div>
+
+                <!-- Document Type -->
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Tipo de Documento
+                  </label>
+                  <select
+                    v-model="documentType"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                  >
+                    <option value="identification">Identificación</option>
+                    <option value="proof_of_address">Comprobante de Domicilio</option>
+                    <option value="bank_statement">Estado Bancario</option>
+                    <option value="notarization">Documento Notariado</option>
+                    <option value="activation_proof">Prueba de Activación</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex gap-3">
+                <button
+                  @click="showUploadModal = false"
+                  :disabled="isUploadingDocument"
+                  class="flex-1 py-2.5 px-4 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  @click="handleUploadDocument"
+                  :disabled="!selectedFile || isUploadingDocument"
+                  class="flex-1 py-2.5 px-4 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <Icon v-if="isUploadingDocument" name="lucide:loader-2" class="w-5 h-5 animate-spin" />
+                  <span>{{ isUploadingDocument ? 'Subiendo...' : 'Subir' }}</span>
+                </button>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- Delete Document Confirmation Modal -->
+    <ConfirmModal
+      :show="showDeleteDocumentModal"
+      title="Eliminar Documento"
+      message="¿Estás seguro de que deseas eliminar este documento? Esta acción no se puede deshacer."
+      confirm-text="Sí, eliminar"
+      cancel-text="No, cancelar"
+      type="danger"
+      @confirm="handleDeleteDocument"
+      @cancel="showDeleteDocumentModal = false"
+    />
   </div>
 </template>

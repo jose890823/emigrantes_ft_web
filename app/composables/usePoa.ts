@@ -116,6 +116,18 @@ export const usePoa = () => {
   }
 
   /**
+   * Convertir File a base64
+   */
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = (error) => reject(error)
+    })
+  }
+
+  /**
    * Subir documento para un POA
    */
   const uploadDocument = async (
@@ -124,17 +136,16 @@ export const usePoa = () => {
     type: DocumentType
   ) => {
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('type', type)
+      // Convertir archivo a base64
+      const fileBase64 = await fileToBase64(file)
 
       const response = await api.post<POADocument>(
         `/poa/${poaId}/documents`,
-        formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          type,
+          fileBase64,
+          fileName: file.name,
+          description: '',
         }
       )
       return { success: true, data: response.data }
@@ -165,6 +176,59 @@ export const usePoa = () => {
     } catch (error: any) {
       return { success: false, error: error.message }
     }
+  }
+
+  /**
+   * Obtener URL de descarga de documento
+   */
+  const getDocumentDownloadUrl = async (poaId: string, documentId: string) => {
+    try {
+      const response = await api.get<{ url: string; fileName: string; mimeType: string }>(
+        `/poa/${poaId}/documents/${documentId}/download`
+      )
+      return { success: true, data: response.data }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
+  }
+
+  /**
+   * Abrir documento en nueva pestaña
+   */
+  const openDocument = async (poaId: string, documentId: string) => {
+    const result = await getDocumentDownloadUrl(poaId, documentId)
+    if (result.success && result.data) {
+      const config = useRuntimeConfig()
+      const baseUrl = config.public.apiBaseUrl.replace('/api', '')
+      const fullUrl = `${baseUrl}${result.data.url}`
+      window.open(fullUrl, '_blank')
+      return { success: true }
+    }
+    return { success: false, error: result.error }
+  }
+
+  /**
+   * Descargar documento
+   */
+  const downloadDocument = async (poaId: string, documentId: string) => {
+    const result = await getDocumentDownloadUrl(poaId, documentId)
+    if (result.success && result.data) {
+      const config = useRuntimeConfig()
+      const baseUrl = config.public.apiBaseUrl.replace('/api', '')
+      const fullUrl = `${baseUrl}${result.data.url}`
+
+      // Crear un elemento <a> temporal para forzar la descarga
+      const link = document.createElement('a')
+      link.href = fullUrl
+      link.download = result.data.fileName
+      link.target = '_blank'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      return { success: true }
+    }
+    return { success: false, error: result.error }
   }
 
   /**
@@ -226,6 +290,9 @@ export const usePoa = () => {
     uploadDocument,
     getPoaDocuments,
     deleteDocument,
+    getDocumentDownloadUrl,
+    openDocument,
+    downloadDocument,
 
     // Utilidades
     getStatusLabel,

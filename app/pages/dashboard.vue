@@ -77,7 +77,20 @@ const { user } = useAuth()
       <!-- Quick Actions -->
       <div class="bg-white rounded-xl shadow-md p-6 mb-8">
         <h2 class="text-xl font-bold text-[#0A1F44] mb-4">Acciones Rápidas</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <NuxtLink
+            to="/poa"
+            class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all group"
+          >
+            <div class="w-10 h-10 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center group-hover:bg-[#D4AF37]/20 transition-colors">
+              <Icon name="lucide:file-text" class="w-5 h-5 text-[#D4AF37]" />
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900 group-hover:text-[#D4AF37] transition-colors">Mis POAs</p>
+              <p class="text-sm text-gray-500">Ver poderes notariales</p>
+            </div>
+          </NuxtLink>
+
           <NuxtLink
             to="/poa/create"
             class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all group"
