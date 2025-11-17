@@ -149,7 +149,10 @@ const handleWhatsAppClick = () => {
             <!-- Badge superior -->
             <div class="animate-fade-in-up flex justify-center">
               <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A1F44]/5 border border-[#0A1F44]/10">
-                <Icon name="lucide:shield-check" class="w-4 h-4 text-[#0A1F44]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
                 <span class="text-[#0A1F44] font-semibold text-sm">100% Respaldado por la Ley de Florida</span>
               </div>
             </div>
@@ -172,7 +175,9 @@ const handleWhatsAppClick = () => {
             <div class="space-y-4 animate-fade-in-up delay-300 max-w-3xl mx-auto">
               <div class="flex items-start gap-3 text-left">
                 <div class="flex-shrink-0 w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center mt-1">
-                  <Icon name="lucide:check" class="w-4 h-4 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
                   <strong class="text-[#0A1F44]">Poder Notarial Duradero (POA)</strong> que te protege ante deportación, detención o incapacidad
@@ -180,7 +185,9 @@ const handleWhatsAppClick = () => {
               </div>
               <div class="flex items-start gap-3 text-left">
                 <div class="flex-shrink-0 w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center mt-1">
-                  <Icon name="lucide:check" class="w-4 h-4 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
                   <strong class="text-[#0A1F44]">Control total garantizado:</strong> Tus instrucciones se ejecutan solo cuando tú lo ordenes
@@ -188,7 +195,9 @@ const handleWhatsAppClick = () => {
               </div>
               <div class="flex items-start gap-3 text-left">
                 <div class="flex-shrink-0 w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center mt-1">
-                  <Icon name="lucide:check" class="w-4 h-4 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
                   <strong class="text-[#0A1F44]">Transparencia total:</strong> Reportes documentados y auditoría completa de cada gestión
@@ -202,7 +211,12 @@ const handleWhatsAppClick = () => {
                 <button class="group relative px-8 py-4 bg-[#D4AF37] text-[#0A1F44] font-bold text-lg rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl w-full sm:w-auto">
                   <div class="absolute inset-0 bg-gradient-to-r from-[#fbbf24]/0 via-[#fbbf24]/20 to-[#fbbf24]/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
                   <span class="relative flex items-center justify-center gap-2">
-                    <Icon name="lucide:rocket" class="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4.5 16.5c-1.5 1.5-2 5-2 5s3.5-.5 5-2c1.5-1.5 2.3-2.3 3-3"/>
+                      <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22 22 0 0 1-4 2z"/>
+                      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+                      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                    </svg>
                     Comenzar Ahora Gratis
                   </span>
                 </button>
@@ -212,7 +226,9 @@ const handleWhatsAppClick = () => {
                 class="group px-8 py-4 bg-white border-2 border-[#0A1F44] text-[#0A1F44] font-bold text-lg rounded-xl transition-all duration-300 hover:bg-[#0A1F44] hover:text-white hover:scale-105 hover:shadow-xl w-full sm:w-auto"
               >
                 <span class="flex items-center justify-center gap-2">
-                  <Icon name="lucide:message-circle" class="w-5 h-5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                  </svg>
                   Hablar con un Asesor
                 </span>
               </button>
@@ -221,15 +237,26 @@ const handleWhatsAppClick = () => {
             <!-- Trust indicators compactos -->
             <div class="flex flex-wrap items-center justify-center gap-6 pt-6 animate-fade-in-up delay-500">
               <div class="flex items-center gap-2">
-                <Icon name="lucide:shield-check" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
                 <span class="text-sm text-gray-600 font-medium">100% Legal</span>
               </div>
               <div class="flex items-center gap-2">
-                <Icon name="lucide:lock" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
                 <span class="text-sm text-gray-600 font-medium">Seguro & Encriptado</span>
               </div>
               <div class="flex items-center gap-2">
-                <Icon name="lucide:users" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
                 <span class="text-sm text-gray-600 font-medium">+500 Familias</span>
               </div>
             </div>
@@ -250,7 +277,10 @@ const handleWhatsAppClick = () => {
         <!-- Header de sección -->
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 mb-6">
-            <Icon name="lucide:award" class="w-4 h-4 text-[#D4AF37]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="6"/>
+              <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
             <span class="text-[#D4AF37] font-semibold text-sm uppercase tracking-wide">Por Qué Elegirnos</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
@@ -267,7 +297,13 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 1 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:scale" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="M7 21h10"/>
+                <path d="M12 3v18"/>
+                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">100% Legal y Regulado</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -278,7 +314,10 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 2 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:shield-check" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Control Total Garantizado</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -289,7 +328,11 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 3 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:file-check" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                <path d="m9 15 2 2 4-4"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Transparencia Total</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -300,7 +343,11 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 4 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:lock-keyhole" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="16" r="1"/>
+                <rect width="18" height="12" x="3" y="10" rx="2"/>
+                <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Seguridad Bancaria</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -311,7 +358,9 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 5 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:headphones" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Soporte Personalizado</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -322,7 +371,11 @@ const handleWhatsAppClick = () => {
           <!-- Beneficio 6 -->
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:globe" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Acceso Global</h3>
             <p class="text-gray-300 leading-relaxed">
@@ -361,7 +414,10 @@ const handleWhatsAppClick = () => {
         <!-- Header de sección -->
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A1F44]/5 border border-[#0A1F44]/10 mb-6">
-            <Icon name="lucide:briefcase" class="w-4 h-4 text-[#0A1F44]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
             <span class="text-[#0A1F44] font-semibold text-sm uppercase tracking-wide">Nuestros Servicios</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1F44] mb-6">
@@ -384,7 +440,40 @@ const handleWhatsAppClick = () => {
             <div class="p-8 pb-6">
               <div class="flex items-start justify-between mb-6">
                 <div class="w-16 h-16 bg-[#0A1F44] rounded-xl flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors duration-300">
-                  <Icon :name="service.icon" class="w-8 h-8 text-white" />
+                  <svg v-if="service.icon === 'lucide:shield-check'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                  <svg v-else-if="service.icon === 'lucide:lock'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <svg v-else-if="service.icon === 'lucide:send'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m22 2-7 20-4-9-9-4Z"/>
+                    <path d="M22 2 11 13"/>
+                  </svg>
+                  <svg v-else-if="service.icon === 'lucide:file-text'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                    <path d="M10 9H8"/>
+                    <path d="M16 13H8"/>
+                    <path d="M16 17H8"/>
+                  </svg>
+                  <svg v-else-if="service.icon === 'lucide:refresh-cw'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                    <path d="M21 3v5h-5"/>
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                    <path d="M8 16H3v5"/>
+                  </svg>
+                  <svg v-else-if="service.icon === 'lucide:building-2'" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 21h18"/>
+                    <path d="m5 21 .14-5.27A2 2 0 0 1 7.12 14h9.76a2 2 0 0 1 1.98 1.73L19 21"/>
+                    <path d="M9 21v-9"/>
+                    <path d="M12 21v-9"/>
+                    <path d="M15 21v-9"/>
+                    <path d="M3 10h18"/>
+                    <path d="M3 6 12 2l9 4"/>
+                  </svg>
                 </div>
                 <span class="text-[#D4AF37] font-bold text-5xl opacity-20">0{{ index + 1 }}</span>
               </div>
@@ -400,7 +489,10 @@ const handleWhatsAppClick = () => {
               <!-- Beneficio clave -->
               <div class="pt-6 border-t border-gray-100">
                 <div class="flex items-start gap-2">
-                  <Icon name="lucide:check-circle-2" class="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
                   <p class="text-sm font-semibold text-[#0A1F44]">
                     {{ service.benefits }}
                   </p>
@@ -419,7 +511,10 @@ const handleWhatsAppClick = () => {
             <button class="group px-8 py-4 bg-[#0A1F44] text-white font-bold text-lg rounded-xl hover:bg-[#D4AF37] hover:text-[#0A1F44] transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <span class="flex items-center justify-center gap-2">
                 Ver Detalles de Todos los Servicios
-                <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                </svg>
               </span>
             </button>
           </NuxtLink>
@@ -439,7 +534,11 @@ const handleWhatsAppClick = () => {
         <!-- Header de sección -->
         <div class="text-center mb-20">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A1F44]/5 border border-[#0A1F44]/10 mb-6">
-            <Icon name="lucide:workflow" class="w-4 h-4 text-[#0A1F44]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="8" height="8" x="3" y="3" rx="2"/>
+              <path d="M7 11v4a2 2 0 0 0 2 2h4"/>
+              <rect width="8" height="8" x="13" y="13" rx="2"/>
+            </svg>
             <span class="text-[#0A1F44] font-semibold text-sm uppercase tracking-wide">Cómo Funciona</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1F44] mb-6">
@@ -475,7 +574,32 @@ const handleWhatsAppClick = () => {
                 <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#D4AF37] hover:shadow-xl transition-all duration-300 group">
                   <div class="flex items-center gap-3 mb-3">
                     <div class="w-10 h-10 bg-[#0A1F44] rounded-lg flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors duration-300">
-                      <Icon :name="step.icon" class="w-5 h-5 text-white" />
+                      <svg v-if="step.icon === 'lucide:phone-call'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
+                        <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                      </svg>
+                      <svg v-else-if="step.icon === 'lucide:file-signature'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L20 7.5"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <path d="M8 12h8"/>
+                        <path d="M8 16h8"/>
+                      </svg>
+                      <svg v-else-if="step.icon === 'lucide:clipboard-list'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                        <path d="M12 11h4"/>
+                        <path d="M12 16h4"/>
+                        <path d="M8 11h.01"/>
+                        <path d="M8 16h.01"/>
+                      </svg>
+                      <svg v-else-if="step.icon === 'lucide:shield'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                      </svg>
+                      <svg v-else-if="step.icon === 'lucide:check-circle'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
                     </div>
                     <h3 class="text-xl font-bold text-[#0A1F44] group-hover:text-[#D4AF37] transition-colors">
                       {{ step.title }}
@@ -512,7 +636,32 @@ const handleWhatsAppClick = () => {
                             {{ step.title }}
                           </h3>
                           <div class="w-12 h-12 bg-[#0A1F44] rounded-xl flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors duration-300 flex-shrink-0">
-                            <Icon :name="step.icon" class="w-6 h-6 text-white" />
+                            <svg v-if="step.icon === 'lucide:phone-call'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                              <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
+                              <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:file-signature'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L20 7.5"/>
+                              <polyline points="14 2 14 8 20 8"/>
+                              <path d="M8 12h8"/>
+                              <path d="M8 16h8"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:clipboard-list'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                              <path d="M12 11h4"/>
+                              <path d="M12 16h4"/>
+                              <path d="M8 11h.01"/>
+                              <path d="M8 16h.01"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:shield'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:check-circle'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                              <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
                           </div>
                         </div>
                         <p class="text-gray-600 leading-relaxed text-lg">
@@ -528,7 +677,32 @@ const handleWhatsAppClick = () => {
                       <div class="bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-[#D4AF37] hover:shadow-2xl transition-all duration-300 group">
                         <div class="flex items-center gap-4 mb-4">
                           <div class="w-12 h-12 bg-[#0A1F44] rounded-xl flex items-center justify-center group-hover:bg-[#D4AF37] transition-colors duration-300 flex-shrink-0">
-                            <Icon :name="step.icon" class="w-6 h-6 text-white" />
+                            <svg v-if="step.icon === 'lucide:phone-call'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                              <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
+                              <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:file-signature'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L20 7.5"/>
+                              <polyline points="14 2 14 8 20 8"/>
+                              <path d="M8 12h8"/>
+                              <path d="M8 16h8"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:clipboard-list'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                              <path d="M12 11h4"/>
+                              <path d="M12 16h4"/>
+                              <path d="M8 11h.01"/>
+                              <path d="M8 16h.01"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:shield'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                            </svg>
+                            <svg v-else-if="step.icon === 'lucide:check-circle'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                              <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
                           </div>
                           <h3 class="text-2xl font-bold text-[#0A1F44] group-hover:text-[#D4AF37] transition-colors">
                             {{ step.title }}
@@ -559,7 +733,10 @@ const handleWhatsAppClick = () => {
             <button class="group px-10 py-5 bg-[#D4AF37] text-[#0A1F44] font-bold text-lg rounded-xl hover:bg-[#0A1F44] hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <span class="flex items-center justify-center gap-2">
                 Ver Proceso Completo y Detallado
-                <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                </svg>
               </span>
             </button>
           </NuxtLink>
@@ -573,7 +750,11 @@ const handleWhatsAppClick = () => {
         <!-- Header -->
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A1F44]/5 border border-[#0A1F44]/10 mb-6">
-            <Icon name="lucide:users-round" class="w-4 h-4 text-[#0A1F44]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 21a8 8 0 0 0-16 0"/>
+              <circle cx="10" cy="8" r="5"/>
+              <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/>
+            </svg>
             <span class="text-[#0A1F44] font-semibold text-sm uppercase tracking-wide">Casos de Uso</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1F44] mb-6">
@@ -590,14 +771,20 @@ const handleWhatsAppClick = () => {
           <!-- Caso 1 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:plane-takeoff" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 22h20"/>
+                <path d="M6.36 17.4 4 17l-2-12 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 4.1l-.1-.07a2 2 0 0 1-.8-1.6V2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.43a2 2 0 0 1-.8 1.6L14 4.1l1.13.55a2 2 0 0 0 1.8 0l.17-.1a2 2 0 0 1 1.8 0L20 5l-2 12-2.36.4a2 2 0 0 1-1.1-.17l-2-1.12a2 2 0 0 0-1.8 0l-2 1.12a2 2 0 0 1-1.1.17z"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Deportación Inesperada</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               Si eres deportado, tus instrucciones previas se activan automáticamente para que tu familia pueda acceder a tus cuentas y bienes sin complicaciones.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Protección inmediata</span>
             </div>
           </div>
@@ -605,14 +792,24 @@ const handleWhatsAppClick = () => {
           <!-- Caso 2 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:hospital" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 6v4"/>
+                <path d="M14 14h-4"/>
+                <path d="M14 18h-4"/>
+                <path d="M14 8h-4"/>
+                <path d="M18 12h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+                <path d="M18 22V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v18"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Emergencia Médica</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               En caso de incapacidad temporal o permanente, tu POA duradero garantiza que tus decisiones financieras se respeten y ejecuten correctamente.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Continuidad garantizada</span>
             </div>
           </div>
@@ -620,14 +817,21 @@ const handleWhatsAppClick = () => {
           <!-- Caso 3 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:lock-keyhole" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="16" r="1"/>
+                <rect width="18" height="12" x="3" y="10" rx="2"/>
+                <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Detención Migratoria</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               Si enfrentas detención, tu representante autorizado puede gestionar tus cuentas bancarias, pagar facturas y proteger tus bienes según tus instrucciones.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Control desde cualquier lugar</span>
             </div>
           </div>
@@ -635,14 +839,21 @@ const handleWhatsAppClick = () => {
           <!-- Caso 4 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:globe" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Viaje al Extranjero</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               Cuando viajas fuera del país por tiempo prolongado, mantienes el control total de tus finanzas sin necesidad de estar físicamente presente.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Gestión remota</span>
             </div>
           </div>
@@ -650,14 +861,20 @@ const handleWhatsAppClick = () => {
           <!-- Caso 5 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:home" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Protección de Propiedades</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               Gestiona la venta, renta o mantenimiento de propiedades inmobiliarias desde cualquier parte del mundo con total seguridad jurídica.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Bienes protegidos</span>
             </div>
           </div>
@@ -665,14 +882,22 @@ const handleWhatsAppClick = () => {
           <!-- Caso 6 -->
           <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-[#D4AF37]">
             <div class="w-14 h-14 bg-[#0A1F44] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37] transition-colors duration-300">
-              <Icon name="lucide:heart-handshake" class="w-7 h-7 text-white" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                <path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"/>
+                <path d="m18 15-2-2"/>
+                <path d="m15 18-2-2"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Protección Familiar</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
               Asegura que tu familia tenga acceso a los recursos necesarios en caso de que no puedas proveerlos directamente por cualquier circunstancia.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
-              <Icon name="lucide:shield-check" class="w-4 h-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>Familia protegida</span>
             </div>
           </div>
@@ -685,7 +910,10 @@ const handleWhatsAppClick = () => {
             <button class="group px-10 py-5 bg-[#0A1F44] text-white font-bold text-lg rounded-xl hover:bg-[#D4AF37] hover:text-[#0A1F44] transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <span class="flex items-center justify-center gap-2">
                 Crear Mi Plan de Protección
-                <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                </svg>
               </span>
             </button>
           </NuxtLink>
@@ -705,7 +933,10 @@ const handleWhatsAppClick = () => {
         <!-- Header -->
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A1F44]/5 border border-[#0A1F44]/10 mb-6">
-            <Icon name="lucide:quote" class="w-4 h-4 text-[#0A1F44]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+              <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+            </svg>
             <span class="text-[#0A1F44] font-semibold text-sm uppercase tracking-wide">Testimonios</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0A1F44] mb-6">
@@ -726,17 +957,28 @@ const handleWhatsAppClick = () => {
           >
             <!-- Quote Icon -->
             <div class="w-12 h-12 bg-[#D4AF37]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#D4AF37]/20 transition-colors duration-300">
-              <Icon name="lucide:quote" class="w-6 h-6 text-[#D4AF37]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+              </svg>
             </div>
 
             <!-- Rating -->
             <div class="flex gap-1 mb-4">
-              <Icon
+              <svg
                 v-for="star in testimonial.rating"
                 :key="star"
-                name="lucide:star"
+                xmlns="http://www.w3.org/2000/svg"
                 class="w-5 h-5 text-[#D4AF37] fill-current"
-              />
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
             </div>
 
             <!-- Testimonial -->
@@ -765,28 +1007,41 @@ const handleWhatsAppClick = () => {
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div class="text-center">
               <div class="w-16 h-16 bg-[#0A1F44]/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="lucide:shield-check" class="w-8 h-8 text-[#0A1F44]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
               </div>
               <p class="text-2xl font-bold text-[#0A1F44] mb-1">100%</p>
               <p class="text-sm text-gray-600">Clientes Satisfechos</p>
             </div>
             <div class="text-center">
               <div class="w-16 h-16 bg-[#0A1F44]/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="lucide:users" class="w-8 h-8 text-[#0A1F44]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
               </div>
               <p class="text-2xl font-bold text-[#0A1F44] mb-1">500+</p>
               <p class="text-sm text-gray-600">Familias Protegidas</p>
             </div>
             <div class="text-center">
               <div class="w-16 h-16 bg-[#0A1F44]/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="lucide:star" class="w-8 h-8 text-[#0A1F44]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
               </div>
               <p class="text-2xl font-bold text-[#0A1F44] mb-1">4.9/5</p>
               <p class="text-sm text-gray-600">Calificación</p>
             </div>
             <div class="text-center">
               <div class="w-16 h-16 bg-[#0A1F44]/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="lucide:award" class="w-8 h-8 text-[#0A1F44]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="6"/>
+                  <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                </svg>
               </div>
               <p class="text-2xl font-bold text-[#0A1F44] mb-1">5+</p>
               <p class="text-sm text-gray-600">Años Experiencia</p>
@@ -808,7 +1063,9 @@ const handleWhatsAppClick = () => {
         <!-- Header -->
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 mb-6">
-            <Icon name="lucide:shield" class="w-4 h-4 text-[#D4AF37]" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+            </svg>
             <span class="text-[#D4AF37] font-semibold text-sm uppercase tracking-wide">Garantías</span>
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
@@ -824,7 +1081,10 @@ const handleWhatsAppClick = () => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:check-circle-2" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Solo Tus Instrucciones</h3>
             <p class="text-gray-300 text-sm">
@@ -834,7 +1094,10 @@ const handleWhatsAppClick = () => {
 
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:ban" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="m4.9 4.9 14.2 14.2"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Sin Manejo de Fondos</h3>
             <p class="text-gray-300 text-sm">
@@ -844,7 +1107,13 @@ const handleWhatsAppClick = () => {
 
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:file-text" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                <path d="M10 9H8"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Todo Documentado</h3>
             <p class="text-gray-300 text-sm">
@@ -854,7 +1123,13 @@ const handleWhatsAppClick = () => {
 
           <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all duration-300 group">
             <div class="w-16 h-16 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Icon name="lucide:scale" class="w-8 h-8 text-[#0A1F44]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                <path d="M7 21h10"/>
+                <path d="M12 3v18"/>
+                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+              </svg>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">Respaldo Legal</h3>
             <p class="text-gray-300 text-sm">
@@ -867,7 +1142,11 @@ const handleWhatsAppClick = () => {
         <div class="bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-8 lg:p-10 max-w-5xl mx-auto">
           <div class="flex items-start gap-4">
             <div class="flex-shrink-0 w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
-              <Icon name="lucide:info" class="w-6 h-6 text-amber-300" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
             </div>
             <div>
               <h3 class="text-xl font-bold text-amber-200 mb-3">Aviso Legal Importante</h3>
@@ -896,7 +1175,13 @@ const handleWhatsAppClick = () => {
           <!-- Contenido principal -->
           <div class="text-center mb-12">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 mb-8">
-              <Icon name="lucide:sparkles" class="w-4 h-4 text-[#D4AF37]" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                <path d="M5 3v4"/>
+                <path d="M19 17v4"/>
+                <path d="M3 5h4"/>
+                <path d="M17 19h4"/>
+              </svg>
               <span class="text-[#D4AF37] font-semibold text-sm uppercase tracking-wide">Comienza Hoy</span>
             </div>
 
@@ -915,7 +1200,12 @@ const handleWhatsAppClick = () => {
               <NuxtLink to="/auth/register" class="w-full sm:w-auto">
                 <button class="group w-full sm:w-auto px-10 py-6 bg-[#D4AF37] text-[#0A1F44] font-bold text-lg rounded-xl hover:bg-white transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                   <span class="flex items-center justify-center gap-2">
-                    <Icon name="lucide:rocket" class="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4.5 16.5c-1.5 1.5-2 5-2 5s3.5-.5 5-2c1.5-1.5 2.3-2.3 3-3"/>
+                      <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22 22 0 0 1-4 2z"/>
+                      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+                      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                    </svg>
                     Crear Cuenta Gratis
                   </span>
                 </button>
@@ -926,7 +1216,9 @@ const handleWhatsAppClick = () => {
                 class="group w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold text-lg rounded-xl hover:bg-white hover:text-[#0A1F44] transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
                 <span class="flex items-center justify-center gap-2">
-                  <Icon name="lucide:message-circle" class="w-5 h-5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                  </svg>
                   Hablar con un Asesor
                 </span>
               </button>
@@ -936,7 +1228,9 @@ const handleWhatsAppClick = () => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
                 <div class="w-12 h-12 bg-[#D4AF37] rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Icon name="lucide:zap" class="w-6 h-6 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
                 </div>
                 <h3 class="text-white font-bold mb-2">Activación Inmediata</h3>
                 <p class="text-gray-300 text-sm">Protección desde el primer día</p>
@@ -944,7 +1238,10 @@ const handleWhatsAppClick = () => {
 
               <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
                 <div class="w-12 h-12 bg-[#D4AF37] rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Icon name="lucide:shield-check" class="w-6 h-6 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
                 </div>
                 <h3 class="text-white font-bold mb-2">100% Legal</h3>
                 <p class="text-gray-300 text-sm">Respaldado por ley de Florida</p>
@@ -952,7 +1249,10 @@ const handleWhatsAppClick = () => {
 
               <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
                 <div class="w-12 h-12 bg-[#D4AF37] rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Icon name="lucide:dollar-sign" class="w-6 h-6 text-[#0A1F44]" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#0A1F44]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" x2="12" y1="2" y2="22"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
                 </div>
                 <h3 class="text-white font-bold mb-2">Desde $29/mes</h3>
                 <p class="text-gray-300 text-sm">Plan básico accesible</p>
@@ -964,19 +1264,29 @@ const handleWhatsAppClick = () => {
           <div class="text-center pt-12 border-t border-white/10">
             <div class="flex flex-wrap items-center justify-center gap-8 text-gray-400">
               <div class="flex items-center gap-2">
-                <Icon name="lucide:shield-check" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
                 <span class="text-sm">Sin permanencia</span>
               </div>
               <div class="flex items-center gap-2">
-                <Icon name="lucide:lock" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
                 <span class="text-sm">Datos encriptados</span>
               </div>
               <div class="flex items-center gap-2">
-                <Icon name="lucide:headphones" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>
+                </svg>
                 <span class="text-sm">Soporte 24/7</span>
               </div>
               <div class="flex items-center gap-2">
-                <Icon name="lucide:star" class="w-5 h-5 text-[#D4AF37]" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
                 <span class="text-sm">Calificación 4.9/5</span>
               </div>
             </div>
