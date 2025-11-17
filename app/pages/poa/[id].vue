@@ -7,7 +7,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { getPoa, submitPoa, cancelPoa, getPoaHistory, uploadDocument, getPoaDocuments, deleteDocument, openDocument, downloadDocument, getStatusLabel, getStatusColor, getTypeLabel } = usePoa()
+const { getPoa, submitPoa, cancelPoa, getPoaHistory, uploadDocument, getPoaDocuments, deleteDocument, openDocument, downloadDocument, getStatusLabel, getStatusColor, getTypeLabel, getActionLabel } = usePoa()
 const toast = useToast()
 
 const poaId = route.params.id as string
@@ -246,24 +246,40 @@ onMounted(() => {
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
       <!-- Loading -->
-      <div v-if="isLoading" class="flex justify-center py-12">
-        <Icon name="lucide:loader-2" class="w-8 h-8 text-[#D4AF37] animate-spin" />
+      <div v-if="isLoading" class="flex justify-center py-16">
+        <div class="flex flex-col items-center gap-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-[#D4AF37] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          <p class="text-gray-600 font-medium">Cargando detalles del POA...</p>
+        </div>
       </div>
 
       <!-- Content -->
       <div v-else-if="poa">
         <!-- Header -->
         <div class="mb-8">
-          <div class="flex items-center gap-4 mb-4">
-            <button @click="router.push('/poa')" class="text-gray-600 hover:text-[#0A1F44] transition-colors">
-              <Icon name="lucide:arrow-left" class="w-6 h-6" />
+          <div class="flex items-center gap-4 mb-6">
+            <button @click="router.push('/poa')" class="text-gray-600 hover:text-[#0A1F44] transition-colors p-2 hover:bg-gray-100 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 19-7-7 7-7"/>
+                <path d="M19 12H5"/>
+              </svg>
             </button>
+            <div class="w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
             <div class="flex-1">
-              <h1 class="text-3xl font-bold text-[#0A1F44]">{{ poa.clientFullName }}</h1>
-              <p class="text-gray-600 mt-1">{{ getTypeLabel(poa.type) }} POA</p>
+              <h1 class="text-3xl font-bold bg-gradient-to-r from-[#0A1F44] to-[#1e3a6b] bg-clip-text text-transparent">
+                {{ poa.clientFullName }}
+              </h1>
+              <p class="text-gray-600 mt-1 font-medium">{{ getTypeLabel(poa.type) }} POA</p>
             </div>
             <span
-              :class="['px-4 py-2 rounded-full text-sm font-semibold', getStatusBadgeClasses(poa.status)]"
+              :class="['px-4 py-2 rounded-xl text-sm font-bold shadow-sm', getStatusBadgeClasses(poa.status)]"
             >
               {{ getStatusLabel(poa.status) }}
             </span>
@@ -272,33 +288,49 @@ onMounted(() => {
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3 mb-6">
-          <NuxtLink v-if="canEdit" :to="`/poa/${poaId}/edit`" class="btn-secondary">
-            <Icon name="lucide:edit" class="w-5 h-5" />
+          <NuxtLink v-if="canEdit" :to="`/poa/${poaId}/edit`" class="flex items-center gap-2 px-6 py-3 bg-white text-[#0A1F44] font-semibold rounded-xl shadow-md hover:shadow-lg border-2 border-[#D4AF37] hover:bg-[#D4AF37] transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+              <path d="m15 5 4 4"/>
+            </svg>
             Editar
           </NuxtLink>
           <button
             v-if="canSubmit"
             @click="confirmSubmit"
             :disabled="isSubmitting"
-            class="flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors disabled:opacity-50"
+            class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-[#0A1F44] hover:to-[#1e3a6b] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
           >
-            <Icon v-if="isSubmitting" name="lucide:loader-2" class="w-5 h-5 animate-spin" />
-            <Icon v-else name="lucide:send" class="w-5 h-5" />
+            <svg v-if="isSubmitting" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"/>
+              <path d="M22 2 11 13"/>
+            </svg>
             {{ isSubmitting ? 'Enviando...' : 'Enviar a Revisión' }}
           </button>
           <button
             @click="viewHistory"
-            class="flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
+            class="flex items-center gap-2 px-6 py-3 bg-white text-gray-700 font-semibold rounded-xl shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300 transform hover:scale-105"
           >
-            <Icon name="lucide:history" class="w-5 h-5" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M12 7v5l4 2"/>
+            </svg>
             Ver Historial
           </button>
           <button
             v-if="canCancel"
             @click="showCancelModal = true"
-            class="flex items-center gap-2 px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
+            class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105"
           >
-            <Icon name="lucide:x-circle" class="w-5 h-5" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m15 9-6 6"/>
+              <path d="m9 9 6 6"/>
+            </svg>
             Cancelar POA
           </button>
         </div>
@@ -306,56 +338,72 @@ onMounted(() => {
         <!-- Main Card -->
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
           <!-- Tabs -->
-          <div class="border-b border-gray-200">
+          <div class="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <nav class="flex -mb-px">
               <button
                 @click="activeTab = 'info'"
                 :class="[
-                  'flex-1 py-4 px-6 text-center border-b-2 font-semibold transition-colors',
+                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300 relative',
                   activeTab === 'info'
-                    ? 'border-[#D4AF37] text-[#D4AF37]'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <Icon name="lucide:file-text" class="w-5 h-5 inline-block mr-2" />
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'info' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                  <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                  <path d="M10 9H8"/>
+                  <path d="M16 13H8"/>
+                  <path d="M16 17H8"/>
+                </svg>
                 Información
               </button>
               <button
                 @click="activeTab = 'instructions'"
                 :class="[
-                  'flex-1 py-4 px-6 text-center border-b-2 font-semibold transition-colors',
+                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
                   activeTab === 'instructions'
-                    ? 'border-[#D4AF37] text-[#D4AF37]'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <Icon name="lucide:shield" class="w-5 h-5 inline-block mr-2" />
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'instructions' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
                 Instrucciones
               </button>
               <button
                 @click="activeTab = 'timeline'"
                 :class="[
-                  'flex-1 py-4 px-6 text-center border-b-2 font-semibold transition-colors',
+                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
                   activeTab === 'timeline'
-                    ? 'border-[#D4AF37] text-[#D4AF37]'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <Icon name="lucide:calendar" class="w-5 h-5 inline-block mr-2" />
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'timeline' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 2v4"/>
+                  <path d="M16 2v4"/>
+                  <rect width="18" height="18" x="3" y="4" rx="2"/>
+                  <path d="M3 10h18"/>
+                </svg>
                 Timeline
               </button>
               <button
                 @click="activeTab = 'documents'"
                 :class="[
-                  'flex-1 py-4 px-6 text-center border-b-2 font-semibold transition-colors',
+                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
                   activeTab === 'documents'
-                    ? 'border-[#D4AF37] text-[#D4AF37]'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <Icon name="lucide:paperclip" class="w-5 h-5 inline-block mr-2" />
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'documents' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                </svg>
                 Documentos
-                <span v-if="documents.length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-[#D4AF37] rounded-full">
+                <span v-if="documents.length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full shadow-sm">
                   {{ documents.length }}
                 </span>
               </button>
@@ -366,59 +414,87 @@ onMounted(() => {
           <div class="p-6">
             <!-- Info Tab -->
             <div v-if="activeTab === 'info'" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-500 mb-1">Tipo de POA</h3>
-                  <p class="text-lg text-gray-900">{{ getTypeLabel(poa.type) }}</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300">
+                  <h3 class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Tipo de POA</h3>
+                  <p class="text-lg font-bold text-gray-900">{{ getTypeLabel(poa.type) }}</p>
                 </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-500 mb-1">Estado</h3>
-                  <p class="text-lg text-gray-900">{{ getStatusLabel(poa.status) }}</p>
+                <div class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-green-500 hover:shadow-md transition-all duration-300">
+                  <h3 class="text-xs font-bold text-green-600 uppercase tracking-wide mb-2">Estado</h3>
+                  <p class="text-lg font-bold text-gray-900">{{ getStatusLabel(poa.status) }}</p>
                 </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-500 mb-1">Dirección</h3>
-                  <p class="text-gray-900">{{ poa.clientAddress }}</p>
+                <div class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-purple-500 hover:shadow-md transition-all duration-300">
+                  <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wide mb-2">Dirección</h3>
+                  <p class="text-gray-900 font-medium">{{ poa.clientAddress }}</p>
                 </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-500 mb-1">Identificación</h3>
-                  <p class="text-gray-900">{{ poa.clientIdentification }}</p>
+                <div class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300">
+                  <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">Identificación</h3>
+                  <p class="text-gray-900 font-medium">{{ poa.clientIdentification }}</p>
                 </div>
               </div>
 
-              <div v-if="poa.activationTriggers && poa.activationTriggers.length > 0">
-                <h3 class="text-sm font-semibold text-gray-500 mb-2">Eventos de Activación</h3>
+              <div v-if="poa.activationTriggers && poa.activationTriggers.length > 0" class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-indigo-500 shadow-sm">
+                <h3 class="text-sm font-bold text-indigo-600 mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                  Eventos de Activación
+                </h3>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="trigger in poa.activationTriggers"
                     :key="trigger"
-                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold"
+                    class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
                   >
                     {{ trigger }}
                   </span>
                 </div>
               </div>
 
-              <div v-if="poa.clientNotes">
-                <h3 class="text-sm font-semibold text-gray-500 mb-2">Notas del Cliente</h3>
-                <p class="text-gray-900 bg-gray-50 p-4 rounded-lg">{{ poa.clientNotes }}</p>
+              <div v-if="poa.clientNotes" class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-gray-500 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"/>
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                  </svg>
+                  Notas del Cliente
+                </h3>
+                <p class="text-gray-900 font-medium leading-relaxed">{{ poa.clientNotes }}</p>
               </div>
 
-              <div v-if="poa.adminNotes">
-                <h3 class="text-sm font-semibold text-gray-500 mb-2">Notas del Administrador</h3>
-                <p class="text-gray-900 bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">{{ poa.adminNotes }}</p>
+              <div v-if="poa.adminNotes" class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-yellow-500 shadow-sm">
+                <h3 class="text-sm font-bold text-yellow-600 mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <path d="M12 9v4"/>
+                    <path d="M12 17h.01"/>
+                  </svg>
+                  Notas del Administrador
+                </h3>
+                <p class="text-gray-900 font-medium leading-relaxed">{{ poa.adminNotes }}</p>
               </div>
 
-              <div v-if="poa.rejectionReason">
-                <h3 class="text-sm font-semibold text-gray-500 mb-2">Razón de Rechazo</h3>
-                <p class="text-gray-900 bg-red-50 p-4 rounded-lg border-l-4 border-red-500">{{ poa.rejectionReason }}</p>
+              <div v-if="poa.rejectionReason" class="bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-red-500 shadow-sm">
+                <h3 class="text-sm font-bold text-red-600 mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m15 9-6 6"/>
+                    <path d="m9 9 6 6"/>
+                  </svg>
+                  Razón de Rechazo
+                </h3>
+                <p class="text-gray-900 font-medium leading-relaxed">{{ poa.rejectionReason }}</p>
               </div>
             </div>
 
             <!-- Instructions Tab -->
             <div v-if="activeTab === 'instructions'" class="space-y-6">
-              <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-md mb-6">
+              <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 p-4 rounded-lg mb-6 shadow-sm">
                 <div class="flex">
-                  <Icon name="lucide:lock" class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
                   <div class="ml-3 text-sm text-yellow-700">
                     <p class="font-semibold">Información Encriptada</p>
                     <p class="mt-1">Esta información está encriptada y solo será accesible cuando el POA sea activado.</p>
@@ -428,30 +504,45 @@ onMounted(() => {
 
               <!-- Cuentas -->
               <div v-if="poa.instructions?.accounts && poa.instructions.accounts.length > 0">
-                <h3 class="text-lg font-bold text-gray-900 mb-3">Cuentas Bancarias</h3>
+                <h3 class="text-lg font-bold bg-gradient-to-r from-[#0A1F44] to-[#1e3a6b] bg-clip-text text-transparent mb-3">Cuentas Bancarias</h3>
                 <div class="space-y-2">
                   <div
                     v-for="(account, index) in poa.instructions.accounts"
                     :key="index"
-                    class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg"
+                    class="flex items-center gap-3 bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-200 hover:border-[#D4AF37] hover:shadow-md transition-all duration-300"
                   >
-                    <Icon name="lucide:building-2" class="w-5 h-5 text-gray-500" />
-                    <span class="text-gray-900">{{ account }}</span>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21h18"/>
+                        <path d="m5 21 .14-5.27A2 2 0 0 1 7.12 14h9.76a2 2 0 0 1 1.98 1.73L19 21"/>
+                        <path d="M9 21v-9"/>
+                        <path d="M12 21v-9"/>
+                        <path d="M15 21v-9"/>
+                        <path d="M3 10h18"/>
+                        <path d="M3 6 12 2l9 4"/>
+                      </svg>
+                    </div>
+                    <span class="text-gray-900 font-medium">{{ account }}</span>
                   </div>
                 </div>
               </div>
 
               <!-- Acciones -->
               <div v-if="poa.instructions?.actions && poa.instructions.actions.length > 0">
-                <h3 class="text-lg font-bold text-gray-900 mb-3">Acciones a Ejecutar</h3>
+                <h3 class="text-lg font-bold bg-gradient-to-r from-[#0A1F44] to-[#1e3a6b] bg-clip-text text-transparent mb-3">Acciones a Ejecutar</h3>
                 <div class="space-y-2">
                   <div
                     v-for="(action, index) in poa.instructions.actions"
                     :key="index"
-                    class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg"
+                    class="flex items-center gap-3 bg-gradient-to-r from-gray-50 to-green-50 p-4 rounded-xl border border-gray-200 hover:border-[#D4AF37] hover:shadow-md transition-all duration-300"
                   >
-                    <Icon name="lucide:check-circle" class="w-5 h-5 text-green-500" />
-                    <span class="text-gray-900">{{ action }}</span>
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                    </div>
+                    <span class="text-gray-900 font-medium">{{ action }}</span>
                   </div>
                 </div>
               </div>
@@ -481,69 +572,104 @@ onMounted(() => {
 
             <!-- Timeline Tab -->
             <div v-if="activeTab === 'timeline'" class="space-y-6">
-              <div class="space-y-4">
+              <div class="space-y-0">
                 <div v-if="poa.createdAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <div class="w-0.5 h-full bg-gray-300"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full shadow-md border-2 border-white ring-2 ring-blue-200"></div>
+                    <div class="w-0.5 h-full bg-gradient-to-b from-blue-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1">
-                    <p class="font-semibold text-gray-900">POA Creado</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.createdAt).toLocaleString() }}</p>
+                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-blue-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14"/>
+                        <path d="M5 12h14"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">POA Creado</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.createdAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
 
                 <div v-if="poa.submittedAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div class="w-0.5 h-full bg-gray-300"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full shadow-md border-2 border-white ring-2 ring-yellow-200"></div>
+                    <div class="w-0.5 h-full bg-gradient-to-b from-yellow-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1">
-                    <p class="font-semibold text-gray-900">Enviado a Revisión</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.submittedAt).toLocaleString() }}</p>
+                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-yellow-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                        <path d="M22 2 11 13"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">Enviado a Revisión</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.submittedAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
 
                 <div v-if="poa.approvedAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <div class="w-0.5 h-full bg-gray-300"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-green-500 to-green-600 rounded-full shadow-md border-2 border-white ring-2 ring-green-200"></div>
+                    <div class="w-0.5 h-full bg-gradient-to-b from-green-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1">
-                    <p class="font-semibold text-gray-900">Aprobado</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.approvedAt).toLocaleString() }}</p>
+                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-green-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">Aprobado</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.approvedAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
 
                 <div v-if="poa.notarizedAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-                    <div class="w-0.5 h-full bg-gray-300"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full shadow-md border-2 border-white ring-2 ring-purple-200"></div>
+                    <div class="w-0.5 h-full bg-gradient-to-b from-purple-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1">
-                    <p class="font-semibold text-gray-900">Notariado</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.notarizedAt).toLocaleString() }}</p>
+                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-purple-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">Notariado</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.notarizedAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
 
                 <div v-if="poa.activatedAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-indigo-500 rounded-full"></div>
-                    <div class="w-0.5 h-full bg-gray-300"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full shadow-md border-2 border-white ring-2 ring-indigo-200"></div>
+                    <div class="w-0.5 h-full bg-gradient-to-b from-indigo-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1">
-                    <p class="font-semibold text-gray-900">Activado</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.activatedAt).toLocaleString() }}</p>
+                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-indigo-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">Activado</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.activatedAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
 
                 <div v-if="poa.executedAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
-                    <div class="w-3 h-3 bg-cyan-500 rounded-full"></div>
+                    <div class="w-4 h-4 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full shadow-md border-2 border-white ring-2 ring-cyan-200"></div>
                   </div>
-                  <div class="flex-1">
-                    <p class="font-semibold text-gray-900">Ejecutado</p>
-                    <p class="text-sm text-gray-600">{{ new Date(poa.executedAt).toLocaleString() }}</p>
+                  <div class="flex-1 bg-white border border-gray-200 border-l-4 border-l-cyan-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
+                      <p class="font-bold text-gray-900">Ejecutado</p>
+                    </div>
+                    <p class="text-sm text-gray-600 font-medium ml-7">{{ new Date(poa.executedAt).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
                   </div>
                 </div>
               </div>
@@ -553,13 +679,17 @@ onMounted(() => {
             <div v-if="activeTab === 'documents'" class="space-y-6">
               <!-- Header con botón para subir -->
               <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900">Documentos del POA</h3>
+                <h3 class="text-lg font-bold bg-gradient-to-r from-[#0A1F44] to-[#1e3a6b] bg-clip-text text-transparent">Documentos del POA</h3>
                 <button
                   v-if="canEdit"
                   @click="showUploadModal = true"
-                  class="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
+                  class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-[#0A1F44] hover:to-[#1e3a6b] transition-all duration-300 transform hover:scale-105"
                 >
-                  <Icon name="lucide:upload" class="w-5 h-5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" x2="12" y1="3" y2="15"/>
+                  </svg>
                   Subir Documento
                 </button>
               </div>
@@ -569,60 +699,103 @@ onMounted(() => {
                 <div
                   v-for="doc in documents"
                   :key="doc.id"
-                  class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  class="group border-2 border-gray-200 rounded-xl p-4 hover:border-[#D4AF37] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
                 >
-                  <div class="flex items-start justify-between">
-                    <div class="flex items-start gap-3 flex-1">
-                      <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon name="lucide:file-text" class="w-6 h-6 text-blue-600" />
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-medium text-gray-900 truncate">{{ doc.fileName || doc.name }}</p>
-                        <p class="text-sm text-gray-500 capitalize">{{ doc.type }}</p>
-                        <p class="text-xs text-gray-400 mt-1">
-                          Subido: {{ new Date(doc.uploadedAt || doc.createdAt).toLocaleDateString() }}
+                  <div class="flex items-center gap-3">
+                    <!-- Icono del archivo -->
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                        <path d="M10 9H8"/>
+                        <path d="M16 13H8"/>
+                        <path d="M16 17H8"/>
+                      </svg>
+                    </div>
+
+                    <!-- Información del archivo - con ancho fijo y truncate -->
+                    <div class="flex-1 min-w-0 mr-2">
+                      <p class="font-bold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors" :title="doc.fileName || doc.name">
+                        {{ doc.fileName || doc.name }}
+                      </p>
+                      <div class="flex items-center gap-3 mt-1">
+                        <p class="text-sm text-gray-600 capitalize font-medium">{{ doc.type }}</p>
+                        <p class="text-xs text-gray-500 flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                            <path d="M3 3v5h5"/>
+                            <path d="M12 7v5l4 2"/>
+                          </svg>
+                          {{ new Date(doc.uploadedAt || doc.createdAt).toLocaleDateString() }}
                         </p>
                       </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                      <button
-                        @click="handleOpenDocument(doc.id)"
-                        class="p-2 text-gray-600 hover:text-[#D4AF37] transition-colors"
-                        title="Ver documento"
-                      >
-                        <Icon name="lucide:eye" class="w-5 h-5" />
-                      </button>
-                      <button
-                        @click="handleDownloadDocument(doc.id)"
-                        class="p-2 text-gray-600 hover:text-blue-600 transition-colors"
-                        title="Descargar documento"
-                      >
-                        <Icon name="lucide:download" class="w-5 h-5" />
-                      </button>
-                      <button
-                        v-if="canEdit"
-                        @click="confirmDeleteDocument(doc.id)"
-                        class="p-2 text-gray-600 hover:text-red-600 transition-colors"
-                        title="Eliminar documento"
-                      >
-                        <Icon name="lucide:trash-2" class="w-5 h-5" />
-                      </button>
-                    </div>
+                  </div>
+
+                  <!-- Botones de acción - ahora en una fila separada -->
+                  <div class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
+                    <button
+                      @click="handleOpenDocument(doc.id)"
+                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-all duration-300 text-sm font-medium"
+                      title="Ver documento"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      Ver
+                    </button>
+                    <button
+                      @click="handleDownloadDocument(doc.id)"
+                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 text-sm font-medium"
+                      title="Descargar documento"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" x2="12" y1="15" y2="3"/>
+                      </svg>
+                      Descargar
+                    </button>
+                    <button
+                      v-if="canEdit"
+                      @click="confirmDeleteDocument(doc.id)"
+                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300 text-sm font-medium"
+                      title="Eliminar documento"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        <line x1="10" x2="10" y1="11" y2="17"/>
+                        <line x1="14" x2="14" y1="11" y2="17"/>
+                      </svg>
+                      Eliminar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <!-- Estado vacío -->
-              <div v-else class="text-center py-12">
-                <Icon name="lucide:inbox" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay documentos</h3>
-                <p class="text-gray-500 mb-6">Aún no has subido ningún documento para este POA.</p>
+              <div v-else class="text-center py-16 bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-dashed border-gray-300">
+                <div class="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No hay documentos</h3>
+                <p class="text-gray-600 mb-6 font-medium">Aún no has subido ningún documento para este POA.</p>
                 <button
                   v-if="canEdit"
                   @click="showUploadModal = true"
-                  class="inline-flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-[#0A1F44] hover:to-[#1e3a6b] transition-all duration-300 transform hover:scale-105"
                 >
-                  <Icon name="lucide:upload" class="w-5 h-5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" x2="12" y1="3" y2="15"/>
+                  </svg>
                   Subir Primer Documento
                 </button>
               </div>
@@ -687,11 +860,15 @@ onMounted(() => {
               @click.stop
             >
               <!-- Header -->
-              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900">
+              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900 shadow-lg">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center">
-                      <Icon name="lucide:history" class="w-5 h-5 text-[#0A1F44]" />
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-full flex items-center justify-center shadow-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                        <path d="M12 7v5l4 2"/>
+                      </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white">Historial del POA</h3>
                   </div>
@@ -699,7 +876,10 @@ onMounted(() => {
                     @click="showHistoryModal = false"
                     class="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
                   >
-                    <Icon name="lucide:x" class="w-6 h-6" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 6 6 18"/>
+                      <path d="m6 6 12 12"/>
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -708,10 +888,13 @@ onMounted(() => {
               <div class="p-6 overflow-y-auto flex-1">
                 <!-- Empty state -->
                 <div v-if="history.length === 0" class="flex flex-col items-center justify-center py-12">
-                  <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <Icon name="lucide:inbox" class="w-8 h-8 text-gray-400" />
+                  <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                      <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                    </svg>
                   </div>
-                  <p class="text-gray-500 font-medium">No hay historial disponible</p>
+                  <p class="text-gray-500 font-bold text-lg">No hay historial disponible</p>
                   <p class="text-sm text-gray-400 mt-1">Las acciones realizadas aparecerán aquí</p>
                 </div>
 
@@ -725,29 +908,32 @@ onMounted(() => {
                     <!-- Timeline line -->
                     <div
                       v-if="index < history.length - 1"
-                      class="absolute left-2 top-8 bottom-0 w-0.5 bg-gradient-to-b from-[#D4AF37] to-gray-200"
+                      class="absolute left-2 top-2 bottom-0 w-0.5 bg-gradient-to-b from-[#D4AF37] to-gray-200"
                     ></div>
 
                     <!-- Timeline dot -->
-                    <div class="absolute left-0 top-1 w-4 h-4 bg-[#D4AF37] rounded-full border-2 border-white shadow-md"></div>
+                    <div class="absolute left-0 top-0 w-5 h-5 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-full border-2 border-white shadow-md"></div>
 
-                    <!-- Content -->
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg border border-gray-100 hover:shadow-md transition-shadow">
-                      <div class="flex items-start justify-between gap-4">
-                        <div class="flex-1">
-                          <p class="font-semibold text-gray-900">{{ item.action }}</p>
-                          <p class="text-sm text-gray-600 mt-1 flex items-center gap-1">
-                            <Icon name="lucide:clock" class="w-3 h-3" />
-                            {{ new Date(item.createdAt).toLocaleString('es-ES', {
-                              dateStyle: 'medium',
-                              timeStyle: 'short'
-                            }) }}
-                          </p>
-                          <p v-if="item.notes" class="text-sm text-gray-700 mt-2 bg-blue-50 p-3 rounded-md border-l-2 border-blue-500">
-                            {{ item.notes }}
-                          </p>
-                        </div>
+                    <!-- Content - Sin card, solo texto -->
+                    <div>
+                      <!-- Acción y fecha en la misma línea -->
+                      <div class="flex items-center justify-between gap-4">
+                        <p class="font-bold text-gray-900">{{ getActionLabel(item.action) }}</p>
+                        <p class="text-sm text-gray-600 flex items-center gap-1.5 flex-shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                          </svg>
+                          {{ new Date(item.createdAt).toLocaleString('es-ES', {
+                            dateStyle: 'medium',
+                            timeStyle: 'short'
+                          }) }}
+                        </p>
                       </div>
+                      <!-- Notas si existen -->
+                      <p v-if="item.notes" class="text-sm text-gray-700 mt-2 italic">
+                        {{ item.notes }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -797,11 +983,15 @@ onMounted(() => {
               @click.stop
             >
               <!-- Header -->
-              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900">
+              <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#0A1F44] to-blue-900 shadow-lg">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center">
-                      <Icon name="lucide:upload" class="w-5 h-5 text-[#0A1F44]" />
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-full flex items-center justify-center shadow-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" x2="12" y1="3" y2="15"/>
+                      </svg>
                     </div>
                     <h3 class="text-xl font-bold text-white">Subir Documento</h3>
                   </div>
@@ -809,16 +999,19 @@ onMounted(() => {
                     @click="showUploadModal = false"
                     class="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
                   >
-                    <Icon name="lucide:x" class="w-6 h-6" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 6 6 18"/>
+                      <path d="m6 6 12 12"/>
+                    </svg>
                   </button>
                 </div>
               </div>
 
               <!-- Content -->
-              <div class="p-6 space-y-4">
+              <div class="p-6 space-y-5">
                 <!-- File Input -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <label class="block text-sm font-bold text-gray-700 mb-2">
                     Seleccionar Archivo
                   </label>
                   <div class="relative">
@@ -827,28 +1020,33 @@ onMounted(() => {
                       @change="handleFileSelect"
                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                       class="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-full file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-[#D4AF37] file:text-[#0A1F44]
-                        hover:file:bg-[#0A1F44] hover:file:text-white
-                        file:cursor-pointer file:transition-colors"
+                        file:mr-4 file:py-2.5 file:px-5
+                        file:rounded-xl file:border-0
+                        file:text-sm file:font-bold
+                        file:bg-gradient-to-r file:from-[#D4AF37] file:to-[#B8941F] file:text-white
+                        file:shadow-md
+                        hover:file:from-[#0A1F44] hover:file:to-[#1e3a6b]
+                        file:cursor-pointer file:transition-all file:duration-300
+                        cursor-pointer"
                     />
                   </div>
-                  <p v-if="selectedFile" class="mt-2 text-sm text-gray-600">
-                    <Icon name="lucide:file" class="w-4 h-4 inline-block mr-1" />
-                    {{ selectedFile.name }}
+                  <p v-if="selectedFile" class="mt-3 text-sm text-gray-700 bg-gradient-to-r from-blue-50 to-cyan-50 p-3 rounded-lg border-l-4 border-blue-500 font-medium flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                    </svg>
+                    <span class="truncate">{{ selectedFile.name }}</span>
                   </p>
                 </div>
 
                 <!-- Document Type -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <label class="block text-sm font-bold text-gray-700 mb-2">
                     Tipo de Documento
                   </label>
                   <select
                     v-model="documentType"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all duration-300 font-medium text-gray-700 bg-white hover:border-[#D4AF37] cursor-pointer"
                   >
                     <option value="identification">Identificación</option>
                     <option value="proof_of_address">Comprobante de Domicilio</option>
@@ -861,20 +1059,22 @@ onMounted(() => {
               </div>
 
               <!-- Footer -->
-              <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex gap-3">
+              <div class="px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white flex gap-3">
                 <button
                   @click="showUploadModal = false"
                   :disabled="isUploadingDocument"
-                  class="flex-1 py-2.5 px-4 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                  class="flex-1 py-3 px-4 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 disabled:opacity-50 shadow-sm"
                 >
                   Cancelar
                 </button>
                 <button
                   @click="handleUploadDocument"
                   :disabled="!selectedFile || isUploadingDocument"
-                  class="flex-1 py-2.5 px-4 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  class="flex-1 py-3 px-4 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-bold rounded-xl hover:from-[#0A1F44] hover:to-[#1e3a6b] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
-                  <Icon v-if="isUploadingDocument" name="lucide:loader-2" class="w-5 h-5 animate-spin" />
+                  <svg v-if="isUploadingDocument" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  </svg>
                   <span>{{ isUploadingDocument ? 'Subiendo...' : 'Subir' }}</span>
                 </button>
               </div>

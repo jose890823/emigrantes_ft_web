@@ -189,7 +189,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
       <div class="mb-8">
         <div class="flex items-center gap-4 mb-4">
           <button @click="router.back()" class="text-gray-600 hover:text-[#0A1F44] transition-colors">
-            <Icon name="lucide:arrow-left" class="w-6 h-6" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 19-7-7 7-7"/>
+              <path d="M19 12H5"/>
+            </svg>
           </button>
           <div>
             <h1 class="text-3xl font-bold text-[#0A1F44]">Crear Nuevo POA</h1>
@@ -236,7 +239,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
               <div class="ml-4 flex-1">
                 <div class="flex items-center gap-2">
                   <span class="text-lg font-bold text-[#0A1F44]">{{ type.label }}</span>
-                  <Icon v-if="form.type === type.value" name="lucide:check-circle" class="w-5 h-5 text-[#D4AF37]" />
+                  <svg v-if="form.type === type.value" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <path d="m9 11 3 3L22 4"/>
+                  </svg>
                 </div>
                 <p class="text-gray-600 mt-1">{{ type.description }}</p>
               </div>
@@ -316,7 +322,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
                 type="button"
                 class="px-4 py-2 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
               >
-                <Icon name="lucide:plus" class="w-5 h-5" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="M12 5v14"/>
+                </svg>
               </button>
             </div>
             <div v-if="form.instructions.accounts?.length > 0" class="space-y-2">
@@ -327,7 +336,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
               >
                 <span class="text-gray-700">{{ account }}</span>
                 <button @click="removeAccount(index)" class="text-red-500 hover:text-red-700">
-                  <Icon name="lucide:x" class="w-4 h-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -351,7 +363,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
                 type="button"
                 class="px-4 py-2 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
               >
-                <Icon name="lucide:plus" class="w-5 h-5" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/>
+                  <path d="M12 5v14"/>
+                </svg>
               </button>
             </div>
             <div v-if="form.instructions.actions?.length > 0" class="space-y-2">
@@ -362,7 +377,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
               >
                 <span class="text-gray-700">{{ action }}</span>
                 <button @click="removeAction(index)" class="text-red-500 hover:text-red-700">
-                  <Icon name="lucide:x" class="w-4 h-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -415,7 +433,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
                   <span class="text-gray-600 text-sm ml-2">({{ ben.relationship }}) - {{ ben.percentage }}%</span>
                 </div>
                 <button @click="removeBeneficiary(index)" class="text-red-500 hover:text-red-700">
-                  <Icon name="lucide:x" class="w-4 h-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -472,7 +493,11 @@ const progress = computed(() => (currentStep.value / 4) * 100)
           <!-- Información importante -->
           <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
             <div class="flex">
-              <Icon name="lucide:info" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
               <div class="ml-3 text-sm text-blue-700">
                 <p class="font-semibold mb-1">Información Importante</p>
                 <ul class="list-disc list-inside space-y-1">
@@ -493,7 +518,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
             type="button"
             class="flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
           >
-            <Icon name="lucide:arrow-left" class="w-5 h-5" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 19-7-7 7-7"/>
+              <path d="M19 12H5"/>
+            </svg>
             Anterior
           </button>
           <div v-else></div>
@@ -505,7 +533,10 @@ const progress = computed(() => (currentStep.value / 4) * 100)
             class="flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors"
           >
             Siguiente
-            <Icon name="lucide:arrow-right" class="w-5 h-5" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="m12 5 7 7-7 7"/>
+            </svg>
           </button>
 
           <button
@@ -515,8 +546,12 @@ const progress = computed(() => (currentStep.value / 4) * 100)
             type="button"
             class="flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#0A1F44] hover:text-white transition-colors disabled:opacity-50"
           >
-            <Icon v-if="isLoading" name="lucide:loader-2" class="w-5 h-5 animate-spin" />
-            <Icon v-else name="lucide:check" class="w-5 h-5" />
+            <svg v-if="isLoading" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
             {{ isLoading ? 'Creando...' : 'Crear POA' }}
           </button>
         </div>
