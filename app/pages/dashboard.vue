@@ -4,11 +4,41 @@ definePageMeta({
 })
 
 const { user } = useAuth()
+const api = useApi()
 
 // Animation state
 const mounted = ref(false)
 
-onMounted(() => {
+// Dashboard stats
+const stats = ref({
+  activePoas: 0,
+  totalDocuments: 0,
+  totalPayments: 0,
+  unreadNotifications: 0
+})
+
+const loading = ref(true)
+
+// Load dashboard stats
+const loadStats = async () => {
+  try {
+    loading.value = true
+    const response = await api.get('/poa/stats')
+    if (response.success && response.data) {
+      stats.value = response.data
+    }
+  } catch (error) {
+    console.error('Error loading dashboard stats:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(async () => {
+  // Load stats
+  await loadStats()
+
+  // Trigger animation
   setTimeout(() => {
     mounted.value = true
   }, 100)
@@ -59,7 +89,7 @@ onMounted(() => {
             <div class="relative flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">POAs Activos</p>
-                <p class="text-4xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941F] bg-clip-text text-transparent">0</p>
+                <p class="text-4xl font-bold bg-gradient-to-r from-[#D4AF37] to-[#B8941F] bg-clip-text text-transparent">{{ stats.activePoas }}</p>
                 <p class="text-xs text-gray-400 mt-2">Poderes vigentes</p>
               </div>
               <div class="w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-500 group-hover:rotate-12">
@@ -87,7 +117,7 @@ onMounted(() => {
             <div class="relative flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Documentos</p>
-                <p class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">0</p>
+                <p class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">{{ stats.totalDocuments }}</p>
                 <p class="text-xs text-gray-400 mt-2">Archivos guardados</p>
               </div>
               <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-500 group-hover:rotate-12">
@@ -111,7 +141,7 @@ onMounted(() => {
             <div class="relative flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Pagos</p>
-                <p class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent">$0</p>
+                <p class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent">${{ stats.totalPayments }}</p>
                 <p class="text-xs text-gray-400 mt-2">Balance total</p>
               </div>
               <div class="w-14 h-14 bg-gradient-to-br from-emerald-600 to-emerald-400 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-500 group-hover:rotate-12">
@@ -137,7 +167,7 @@ onMounted(() => {
             <div class="relative flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Notificaciones</p>
-                <p class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">0</p>
+                <p class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">{{ stats.unreadNotifications }}</p>
                 <p class="text-xs text-gray-400 mt-2">Mensajes nuevos</p>
               </div>
               <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-400 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform duration-500 group-hover:rotate-12">
