@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { POA } from '~/types/api'
+import { useMessages, MessageType, type CreateMessageDto } from '~/composables/useMessages'
 
 definePageMeta({
   middleware: 'auth'
@@ -8,6 +9,7 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const { getPoa, submitPoa, cancelPoa, getPoaHistory, uploadDocument, getPoaDocuments, deleteDocument, openDocument, downloadDocument, getStatusLabel, getStatusColor, getTypeLabel, getActionLabel } = usePoa()
+const { messages, loading: loadingMessages, fetchMessages, sendMessage, markAsRead, deleteMessage } = useMessages()
 const toast = useToast()
 
 const poaId = route.params.id as string
@@ -28,6 +30,14 @@ const documentType = ref('identification')
 const documentToDelete = ref<string | null>(null)
 const openMenuId = ref<string | null>(null)
 const menuPosition = ref({ top: 0, left: 0 })
+
+// Messages
+const showMessageModal = ref(false)
+const messageForm = ref<CreateMessageDto>({
+  type: MessageType.GENERAL,
+  subject: '',
+  message: '',
+})
 
 // Toggle menu dropdown
 const toggleMenu = (docId: string, event: MouseEvent) => {
@@ -229,6 +239,58 @@ const viewHistory = async () => {
   showHistoryModal.value = true
 }
 
+// Cargar mensajes
+const loadMessages = async () => {
+  try {
+    await fetchMessages(poaId)
+  } catch (error) {
+    console.error('Error loading messages:', error)
+  }
+}
+
+// Manejar envío de mensaje
+const handleSendMessage = async () => {
+  if (!messageForm.value.subject.trim() || !messageForm.value.message.trim()) {
+    toast.error('Error', 'El asunto y el mensaje son obligatorios')
+    return
+  }
+
+  try {
+    await sendMessage(poaId, messageForm.value)
+    toast.success('Mensaje enviado', 'Tu mensaje ha sido enviado al administrador')
+    showMessageModal.value = false
+    messageForm.value = {
+      type: MessageType.GENERAL,
+      subject: '',
+      message: '',
+    }
+  } catch (error: any) {
+    toast.error('Error', error.message || 'No se pudo enviar el mensaje')
+  }
+}
+
+// Marcar mensaje como leído
+const handleMarkAsRead = async (messageId: string) => {
+  try {
+    await markAsRead(messageId)
+  } catch (error) {
+    console.error('Error marking message as read:', error)
+  }
+}
+
+// Eliminar mensaje
+const handleDeleteMessage = async (messageId: string) => {
+  if (confirm('¿Estás seguro de eliminar este mensaje? Esta acción no se puede deshacer.')) {
+    try {
+      await deleteMessage(messageId)
+      toast.success('Mensaje eliminado correctamente')
+    } catch (error: any) {
+      console.error('Error deleting message:', error)
+      toast.error(error.message || 'Error al eliminar el mensaje')
+    }
+  }
+}
+
 // Puede editar
 const canEdit = computed(() => poa.value?.status === 'draft')
 
@@ -261,6 +323,7 @@ const getStatusBadgeClasses = (status: string) => {
 onMounted(() => {
   loadPoa()
   loadDocuments()
+  loadMessages()
 })
 </script>
 
@@ -427,6 +490,23 @@ onMounted(() => {
                 Documentos
                 <span v-if="documents.length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full shadow-sm">
                   {{ documents.length }}
+                </span>
+              </button>
+              <button
+                @click="activeTab = 'messages'"
+                :class="[
+                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
+                  activeTab === 'messages'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
+                ]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'messages' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                Mensajes
+                <span v-if="messages.filter(m => !m.isRead && m.senderType === 'admin').length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full shadow-sm animate-pulse">
+                  {{ messages.filter(m => !m.isRead && m.senderType === 'admin').length }}
                 </span>
               </button>
             </nav>
@@ -849,6 +929,134 @@ onMounted(() => {
                 </button>
               </div>
             </div>
+
+            <!-- Messages Tab -->
+            <div v-if="activeTab === 'messages'" class="space-y-6">
+              <!-- Header con botón para enviar mensaje -->
+              <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-[#0A1F44]">Mensajes</h2>
+                <button
+                  @click="showMessageModal = true"
+                  class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  Nuevo Mensaje
+                </button>
+              </div>
+
+              <!-- Loading state -->
+              <div v-if="loadingMessages" class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
+                <p class="text-gray-600">Cargando mensajes...</p>
+              </div>
+
+              <!-- Empty state -->
+              <div v-else-if="messages.length === 0" class="text-center py-16">
+                <div class="mx-auto w-24 h-24 mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No hay mensajes</h3>
+                <p class="text-gray-600 max-w-md mx-auto">
+                  Aún no tienes mensajes. Puedes enviar una consulta o pregunta al administrador haciendo clic en "Nuevo Mensaje".
+                </p>
+              </div>
+
+              <!-- Messages list -->
+              <div v-else class="space-y-2 max-h-[600px] overflow-y-auto">
+                <div
+                  v-for="msg in messages"
+                  :key="msg.id"
+                  class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+                  :class="{
+                    'border-l-4 border-l-blue-500': msg.senderType === 'admin',
+                    'border-l-4 border-l-gray-300': msg.senderType === 'client',
+                    'ring-2 ring-blue-200': !msg.isRead && msg.senderType === 'admin'
+                  }"
+                >
+                  <div class="p-3">
+                    <!-- Header compacto en una línea -->
+                    <div class="flex items-center justify-between mb-2">
+                      <!-- Lado izquierdo: Emisor, estado y asunto -->
+                      <div class="flex items-center gap-2 flex-1 min-w-0">
+                        <span
+                          class="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0"
+                          :class="{
+                            'bg-blue-100 text-blue-800': msg.senderType === 'admin',
+                            'bg-gray-100 text-gray-800': msg.senderType === 'client'
+                          }"
+                        >
+                          {{ msg.senderType === 'admin' ? 'Admin' : 'Yo' }}
+                        </span>
+                        <span v-if="!msg.isRead && msg.senderType === 'admin'" class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-[10px] font-bold animate-pulse flex-shrink-0">
+                          Nuevo
+                        </span>
+                        <span
+                          class="font-bold text-sm truncate"
+                          :class="{ 'text-blue-700': !msg.isRead && msg.senderType === 'admin' }"
+                          :title="msg.subject"
+                        >
+                          {{ msg.subject }}
+                        </span>
+                      </div>
+
+                      <!-- Lado derecho: Tipo y fecha -->
+                      <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full text-[10px] font-medium hidden sm:inline-flex">
+                          {{
+                            msg.type === 'request_document' ? 'Doc' :
+                            msg.type === 'status_update' ? 'Estado' :
+                            msg.type === 'question' ? 'Pregunta' : 'General'
+                          }}
+                        </span>
+                        <span class="text-[11px] text-gray-500 whitespace-nowrap">
+                          {{ new Date(msg.createdAt).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Mensaje con límite de líneas -->
+                    <p class="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed mb-2 line-clamp-3">{{ msg.message }}</p>
+
+                    <!-- Footer compacto -->
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                      <div v-if="msg.sender" class="text-[10px] text-gray-600 truncate flex-1 min-w-0">
+                        <span class="font-medium">De:</span>
+                        {{ msg.sender.firstName }} {{ msg.sender.lastName }}
+                      </div>
+
+                      <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                        <!-- Botón marcar como leído (solo mensajes del admin) -->
+                        <button
+                          v-if="!msg.isRead && msg.senderType === 'admin'"
+                          @click="handleMarkAsRead(msg.id)"
+                          class="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium text-[10px]"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                          Leído
+                        </button>
+                        <!-- Botón eliminar (solo mensajes del cliente no leídos) -->
+                        <button
+                          v-if="!msg.isRead && msg.senderType === 'client'"
+                          @click="handleDeleteMessage(msg.id)"
+                          class="flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors font-medium text-[10px]"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                          </svg>
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1144,5 +1352,69 @@ onMounted(() => {
       @confirm="handleDeleteDocument"
       @cancel="showDeleteDocumentModal = false"
     />
+
+    <!-- Message Modal -->
+    <div v-if="showMessageModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-2xl font-bold text-[#0A1F44]">Enviar Mensaje al Administrador</h3>
+          <p class="text-gray-600 mt-1">Envía una consulta o pregunta sobre tu POA</p>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <!-- Tipo de mensaje -->
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Tipo de Mensaje *</label>
+            <select
+              v-model="messageForm.type"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+            >
+              <option :value="MessageType.GENERAL">General</option>
+              <option :value="MessageType.QUESTION">Pregunta</option>
+              <option :value="MessageType.REQUEST_DOCUMENT">Solicitud de Documento</option>
+              <option :value="MessageType.STATUS_UPDATE">Actualización de Estado</option>
+            </select>
+          </div>
+
+          <!-- Asunto -->
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Asunto *</label>
+            <input
+              v-model="messageForm.subject"
+              type="text"
+              placeholder="Ej: Consulta sobre documentos requeridos"
+              maxlength="255"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+            />
+          </div>
+
+          <!-- Mensaje -->
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Mensaje *</label>
+            <textarea
+              v-model="messageForm.message"
+              rows="6"
+              placeholder="Escribe tu mensaje aquí..."
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+          <button
+            @click="showMessageModal = false"
+            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="handleSendMessage"
+            class="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105"
+          >
+            Enviar Mensaje
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
