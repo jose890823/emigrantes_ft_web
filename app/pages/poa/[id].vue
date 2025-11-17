@@ -26,6 +26,28 @@ const activeTab = ref('info')
 const selectedFile = ref<File | null>(null)
 const documentType = ref('identification')
 const documentToDelete = ref<string | null>(null)
+const openMenuId = ref<string | null>(null)
+const menuPosition = ref({ top: 0, left: 0 })
+
+// Toggle menu dropdown
+const toggleMenu = (docId: string, event: MouseEvent) => {
+  if (openMenuId.value === docId) {
+    openMenuId.value = null
+  } else {
+    openMenuId.value = docId
+    const button = event.currentTarget as HTMLElement
+    const rect = button.getBoundingClientRect()
+    menuPosition.value = {
+      top: rect.bottom + window.scrollY + 8,
+      left: rect.right + window.scrollX - 192 // 192px = w-48
+    }
+  }
+}
+
+// Cerrar menu al hacer click fuera
+const closeMenu = () => {
+  openMenuId.value = null
+}
 
 // Cargar POA
 const loadPoa = async () => {
@@ -572,13 +594,13 @@ onMounted(() => {
 
             <!-- Timeline Tab -->
             <div v-if="activeTab === 'timeline'" class="space-y-6">
-              <div class="space-y-0">
+              <div class="space-y-3">
                 <div v-if="poa.createdAt" class="flex gap-4">
                   <div class="flex flex-col items-center">
                     <div class="w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full shadow-md border-2 border-white ring-2 ring-blue-200"></div>
                     <div class="w-0.5 h-full bg-gradient-to-b from-blue-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-blue-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="pb-6 flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 5v14"/>
@@ -595,7 +617,7 @@ onMounted(() => {
                     <div class="w-4 h-4 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full shadow-md border-2 border-white ring-2 ring-yellow-200"></div>
                     <div class="w-0.5 h-full bg-gradient-to-b from-yellow-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-yellow-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="pb-6 flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="m22 2-7 20-4-9-9-4Z"/>
@@ -612,7 +634,7 @@ onMounted(() => {
                     <div class="w-4 h-4 bg-gradient-to-br from-green-500 to-green-600 rounded-full shadow-md border-2 border-white ring-2 ring-green-200"></div>
                     <div class="w-0.5 h-full bg-gradient-to-b from-green-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-green-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="pb-6 flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
@@ -629,7 +651,7 @@ onMounted(() => {
                     <div class="w-4 h-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full shadow-md border-2 border-white ring-2 ring-purple-200"></div>
                     <div class="w-0.5 h-full bg-gradient-to-b from-purple-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-purple-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="pb-6 flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
@@ -646,7 +668,7 @@ onMounted(() => {
                     <div class="w-4 h-4 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full shadow-md border-2 border-white ring-2 ring-indigo-200"></div>
                     <div class="w-0.5 h-full bg-gradient-to-b from-indigo-300 to-gray-200"></div>
                   </div>
-                  <div class="pb-8 flex-1 bg-white border border-gray-200 border-l-4 border-l-indigo-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="pb-6 flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
@@ -661,7 +683,7 @@ onMounted(() => {
                   <div class="flex flex-col items-center">
                     <div class="w-4 h-4 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full shadow-md border-2 border-white ring-2 ring-cyan-200"></div>
                   </div>
-                  <div class="flex-1 bg-white border border-gray-200 border-l-4 border-l-cyan-500 p-4 rounded-xl hover:shadow-md transition-all duration-300 -mt-2">
+                  <div class="flex-1 bg-white border border-gray-200 p-4 rounded-xl hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-2 mb-1">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
@@ -695,11 +717,12 @@ onMounted(() => {
               </div>
 
               <!-- Lista de documentos -->
-              <div v-if="documents.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-if="documents.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="overflow: visible;">
                 <div
                   v-for="doc in documents"
                   :key="doc.id"
                   class="group border-2 border-gray-200 rounded-xl p-4 hover:border-[#D4AF37] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                  style="overflow: visible;"
                 >
                   <div class="flex items-center gap-3">
                     <!-- Icono del archivo -->
@@ -714,7 +737,7 @@ onMounted(() => {
                     </div>
 
                     <!-- Información del archivo - con ancho fijo y truncate -->
-                    <div class="flex-1 min-w-0 mr-2">
+                    <div class="flex-1 min-w-0">
                       <p class="font-bold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors" :title="doc.fileName || doc.name">
                         {{ doc.fileName || doc.name }}
                       </p>
@@ -730,48 +753,74 @@ onMounted(() => {
                         </p>
                       </div>
                     </div>
-                  </div>
 
-                  <!-- Botones de acción - ahora en una fila separada -->
-                  <div class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
+                    <!-- Menu dropdown -->
                     <button
-                      @click="handleOpenDocument(doc.id)"
-                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-all duration-300 text-sm font-medium"
-                      title="Ver documento"
+                      @click="toggleMenu(doc.id, $event)"
+                      class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      title="Opciones"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                        <circle cx="12" cy="12" r="3"/>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
                       </svg>
-                      Ver
                     </button>
-                    <button
-                      @click="handleDownloadDocument(doc.id)"
-                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 text-sm font-medium"
-                      title="Descargar documento"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" x2="12" y1="15" y2="3"/>
-                      </svg>
-                      Descargar
-                    </button>
-                    <button
-                      v-if="canEdit"
-                      @click="confirmDeleteDocument(doc.id)"
-                      class="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300 text-sm font-medium"
-                      title="Eliminar documento"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                        <line x1="10" x2="10" y1="11" y2="17"/>
-                        <line x1="14" x2="14" y1="11" y2="17"/>
-                      </svg>
-                      Eliminar
-                    </button>
+
+                    <!-- Dropdown menu usando Teleport -->
+                    <Teleport to="body">
+                      <Transition
+                        enter-active-class="transition ease-out duration-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100"
+                        leave-to-class="transform opacity-0 scale-95"
+                      >
+                        <div
+                          v-if="openMenuId === doc.id"
+                          class="fixed w-48 bg-white rounded-xl shadow-xl border border-gray-200 py-1"
+                          :style="{ top: menuPosition.top + 'px', left: menuPosition.left + 'px', zIndex: 9999 }"
+                          @click="closeMenu"
+                        >
+                          <button
+                            @click="handleOpenDocument(doc.id)"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            Ver documento
+                          </button>
+                          <button
+                            @click="handleDownloadDocument(doc.id)"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                              <polyline points="7 10 12 15 17 10"/>
+                              <line x1="12" x2="12" y1="15" y2="3"/>
+                            </svg>
+                            Descargar
+                          </button>
+                          <button
+                            v-if="canEdit"
+                            @click="confirmDeleteDocument(doc.id)"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M3 6h18"/>
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                              <line x1="10" x2="10" y1="11" y2="17"/>
+                              <line x1="14" x2="14" y1="11" y2="17"/>
+                            </svg>
+                            Eliminar
+                          </button>
+                        </div>
+                      </Transition>
+                    </Teleport>
                   </div>
                 </div>
               </div>
