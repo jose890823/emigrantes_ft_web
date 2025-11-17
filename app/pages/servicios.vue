@@ -119,7 +119,10 @@ const handleContactWhatsApp = () => {
         <div class="max-w-4xl mx-auto text-center space-y-6">
           <!-- Badge -->
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 backdrop-blur-sm">
-            <Icon name="lucide:briefcase" class="w-4 h-4 text-[#D4AF37]" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#D4AF37]">
+              <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              <rect width="20" height="14" x="2" y="6" rx="2"/>
+            </svg>
             <span class="text-[#D4AF37] font-semibold text-sm">Servicios Profesionales</span>
           </div>
 
@@ -142,7 +145,9 @@ const handleContactWhatsApp = () => {
             >
               <div class="absolute inset-0 bg-linear-to-r from-[#D4AF37] via-[#fbbf24] to-[#D4AF37] bg-[length:200%_100%] animate-shimmer"></div>
               <span class="relative flex items-center justify-center text-[#0A1F44] gap-2">
-                <Icon name="lucide:message-circle" class="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 group-hover:rotate-12 transition-transform">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                </svg>
                 Consulta Gratis por WhatsApp
               </span>
             </button>
@@ -150,7 +155,10 @@ const handleContactWhatsApp = () => {
             <NuxtLink to="/planes">
               <button class="px-8 py-5 text-base font-bold text-white rounded-full border-2 border-white/30 hover:border-[#D4AF37] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center gap-2 group">
                 Ver Planes y Precios
-                <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                  <path d="M5 12h14"/>
+                  <path d="m12 5 7 7-7 7"/>
+                </svg>
               </button>
             </NuxtLink>
           </div>
@@ -187,7 +195,38 @@ const handleContactWhatsApp = () => {
 
                   <!-- Floating Icon -->
                   <div class="absolute top-6 right-6 w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center transform group-hover:rotate-12 transition-all duration-400">
-                    <Icon :name="service.icon" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`" />
+                    <svg v-if="service.icon === 'lucide:shield-check'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                      <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:lock-keyhole'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <circle cx="12" cy="16" r="1"/>
+                      <rect x="3" y="10" width="18" height="12" rx="2"/>
+                      <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:zap'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:file-bar-chart'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                      <path d="M8 18v-2"/>
+                      <path d="M12 18v-4"/>
+                      <path d="M16 18v-6"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:refresh-cw'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                      <path d="M21 3v5h-5"/>
+                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                      <path d="M8 16H3v5"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:scale'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="`w-8 h-8 bg-linear-to-br ${service.color} bg-clip-text text-transparent`">
+                      <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                      <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                      <path d="M7 21h10"/>
+                      <path d="M12 3v18"/>
+                      <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -199,7 +238,38 @@ const handleContactWhatsApp = () => {
               >
                 <div class="space-y-4">
                   <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100">
-                    <Icon :name="service.icon" class="w-5 h-5 text-[#0A1F44]" />
+                    <svg v-if="service.icon === 'lucide:shield-check'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                      <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:lock-keyhole'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <circle cx="12" cy="16" r="1"/>
+                      <rect x="3" y="10" width="18" height="12" rx="2"/>
+                      <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:zap'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:file-bar-chart'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                      <path d="M8 18v-2"/>
+                      <path d="M12 18v-4"/>
+                      <path d="M16 18v-6"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:refresh-cw'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                      <path d="M21 3v5h-5"/>
+                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                      <path d="M8 16H3v5"/>
+                    </svg>
+                    <svg v-else-if="service.icon === 'lucide:scale'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#0A1F44]">
+                      <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                      <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                      <path d="M7 21h10"/>
+                      <path d="M12 3v18"/>
+                      <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                    </svg>
                     <span class="text-[#0A1F44] font-semibold text-sm">Servicio {{ index + 1 }}</span>
                   </div>
 
@@ -220,7 +290,9 @@ const handleContactWhatsApp = () => {
                     class="flex items-start gap-3 group"
                   >
                     <div class="shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                      <Icon name="lucide:check" class="w-4 h-4 text-white" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white">
+                        <path d="M20 6 9 17l-5-5"/>
+                      </svg>
                     </div>
                     <span class="text-gray-700 leading-relaxed">{{ feature }}</span>
                   </li>
@@ -235,7 +307,10 @@ const handleContactWhatsApp = () => {
                     <div :class="`absolute inset-0 bg-linear-to-r ${service.color} opacity-100`"></div>
                     <span class="relative flex items-center justify-center text-white font-semibold gap-2">
                       Consultar sobre este servicio
-                      <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 group-hover:translate-x-1 transition-transform">
+                        <path d="M5 12h14"/>
+                        <path d="m12 5 7 7-7 7"/>
+                      </svg>
                     </span>
                   </button>
                 </div>
@@ -276,7 +351,11 @@ const handleContactWhatsApp = () => {
             >
               <div class="absolute inset-0 bg-linear-to-r from-[#D4AF37] via-[#fbbf24] to-[#D4AF37] bg-[length:200%_100%] animate-shimmer"></div>
               <span class="relative flex items-center justify-center text-[#0A1F44] gap-2">
-                <Icon name="lucide:phone-call" class="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 group-hover:rotate-12 transition-transform">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  <path d="M14.05 2a9 9 0 0 1 8 7.94"/>
+                  <path d="M14.05 6A5 5 0 0 1 18 10"/>
+                </svg>
                 Consulta Gratis por WhatsApp
               </span>
             </button>
@@ -284,7 +363,11 @@ const handleContactWhatsApp = () => {
             <NuxtLink to="/como-funciona">
               <button class="px-10 py-6 text-lg font-bold text-white rounded-full border-2 border-white/30 hover:border-[#D4AF37] hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center gap-2 group">
                 ¿Cómo funciona?
-                <Icon name="lucide:help-circle" class="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 group-hover:rotate-12 transition-transform">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                  <path d="M12 17h.01"/>
+                </svg>
               </button>
             </NuxtLink>
           </div>
