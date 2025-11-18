@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { POA } from '~/types/api'
-import { useMessages, MessageType, type CreateMessageDto } from '~/composables/useMessages'
+import { useMessages, type CreateMessageDto } from '~/composables/useMessages'
+import { useThreads, type CreateThreadDto, type CreateMessageInThreadDto } from '~/composables/useThreads'
+import { useExecutions } from '~/composables/useExecutions'
+import { MessageType, ThreadType, ThreadStatus, MessageSenderType } from '~/types/poa-messages'
 
 definePageMeta({
   middleware: 'auth'
@@ -10,6 +13,27 @@ const route = useRoute()
 const router = useRouter()
 const { getPoa, submitPoa, cancelPoa, getPoaHistory, uploadDocument, getPoaDocuments, deleteDocument, openDocument, downloadDocument, getStatusLabel, getStatusColor, getTypeLabel, getActionLabel } = usePoa()
 const { messages, loading: loadingMessages, fetchMessages, sendMessage, markAsRead, deleteMessage } = useMessages()
+const {
+  threads,
+  currentThread,
+  loading: loadingThreads,
+  error: threadsError,
+  fetchThreads,
+  fetchThread,
+  createThread,
+  sendMessage: sendThreadMessage,
+  markThreadAsRead,
+  closeThread,
+  reopenThread,
+} = useThreads()
+const {
+  executions,
+  loading: loadingExecutions,
+  fetchExecutions,
+  getExecutionTypeLabel,
+  getExecutionStatusLabel,
+  getExecutionStatusColor,
+} = useExecutions()
 const toast = useToast()
 
 const poaId = route.params.id as string
@@ -31,11 +55,23 @@ const documentToDelete = ref<string | null>(null)
 const openMenuId = ref<string | null>(null)
 const menuPosition = ref({ top: 0, left: 0 })
 
-// Messages
+// Messages (legacy)
 const showMessageModal = ref(false)
 const messageForm = ref<CreateMessageDto>({
   type: MessageType.GENERAL,
   subject: '',
+  message: '',
+})
+
+// Threads
+const showCreateThreadModal = ref(false)
+const showThreadDetailModal = ref(false)
+const selectedThreadId = ref<string | null>(null)
+const threadForm = ref<CreateThreadDto>({
+  type: ThreadType.GENERAL,
+  subject: '',
+})
+const threadMessageForm = ref<CreateMessageInThreadDto>({
   message: '',
 })
 
@@ -248,6 +284,24 @@ const loadMessages = async () => {
   }
 }
 
+// Cargar hilos
+const loadThreads = async () => {
+  try {
+    await fetchThreads(poaId)
+  } catch (error) {
+    console.error('Error loading threads:', error)
+  }
+}
+
+// Cargar ejecuciones
+const loadExecutions = async () => {
+  try {
+    await fetchExecutions(poaId)
+  } catch (error) {
+    console.error('Error loading executions:', error)
+  }
+}
+
 // Manejar envío de mensaje
 const handleSendMessage = async () => {
   if (!messageForm.value.subject.trim() || !messageForm.value.message.trim()) {
@@ -291,6 +345,100 @@ const handleDeleteMessage = async (messageId: string) => {
   }
 }
 
+// ============================================
+// THREAD HANDLERS
+// ============================================
+
+// Crear nuevo hilo
+const handleCreateThread = async () => {
+  if (!threadForm.value.subject.trim()) {
+    toast.error('Error', 'El asunto del hilo es obligatorio')
+    return
+  }
+
+  try {
+    await createThread(poaId, threadForm.value)
+    showCreateThreadModal.value = false
+    threadForm.value = {
+      type: ThreadType.GENERAL,
+      subject: '',
+    }
+    toast.success('Hilo creado', 'El hilo ha sido creado exitosamente')
+  } catch (error: any) {
+    console.error('Error creating thread:', error)
+    toast.error('Error', error.message || 'No se pudo crear el hilo')
+  }
+}
+
+// Abrir hilo para ver mensajes
+const handleOpenThread = async (threadId: string) => {
+  try {
+    selectedThreadId.value = threadId
+    await fetchThread(threadId)
+    showThreadDetailModal.value = true
+
+    // Marcar como leído si tiene mensajes no leídos del admin
+    const thread = threads.value.find(t => t.id === threadId)
+    if (thread && thread.unreadCount > 0) {
+      await markThreadAsRead(threadId)
+    }
+  } catch (error: any) {
+    console.error('Error opening thread:', error)
+    toast.error('Error', error.message || 'No se pudo abrir el hilo')
+  }
+}
+
+// Enviar mensaje en hilo
+const handleSendThreadMessage = async () => {
+  if (!selectedThreadId.value || !threadMessageForm.value.message.trim()) {
+    toast.error('Error', 'El mensaje es obligatorio')
+    return
+  }
+
+  try {
+    await sendThreadMessage(selectedThreadId.value, threadMessageForm.value)
+    threadMessageForm.value = { message: '' }
+
+    // Recargar hilo para ver el nuevo mensaje
+    await fetchThread(selectedThreadId.value)
+    toast.success('Mensaje enviado', 'Tu mensaje ha sido enviado')
+  } catch (error: any) {
+    console.error('Error sending message:', error)
+    toast.error('Error', error.message || 'No se pudo enviar el mensaje')
+  }
+}
+
+// Cerrar hilo
+const handleCloseThread = async (threadId: string) => {
+  if (confirm('¿Está seguro de cerrar este hilo? No se podrán enviar más mensajes.')) {
+    try {
+      await closeThread(threadId)
+
+      // Si está abierto el hilo, cerrarlo
+      if (selectedThreadId.value === threadId) {
+        showThreadDetailModal.value = false
+        selectedThreadId.value = null
+      }
+
+      toast.success('Hilo cerrado', 'El hilo ha sido cerrado')
+    } catch (error: any) {
+      console.error('Error closing thread:', error)
+      toast.error('Error', error.message || 'No se pudo cerrar el hilo')
+    }
+  }
+}
+
+// Reabrir hilo
+const handleReopenThread = async (threadId: string) => {
+  try {
+    await reopenThread(threadId)
+    toast.success('Hilo reabierto', 'El hilo ha sido reabierto')
+  } catch (error: any) {
+    console.error('Error reopening thread:', error)
+    toast.error('Error', error.message || 'No se pudo reabrir el hilo')
+  }
+}
+
 // Puede editar
 const canEdit = computed(() => poa.value?.status === 'draft')
 
@@ -324,6 +472,8 @@ onMounted(() => {
   loadPoa()
   loadDocuments()
   loadMessages()
+  loadThreads()
+  loadExecutions()
 })
 </script>
 
@@ -428,86 +578,111 @@ onMounted(() => {
               <button
                 @click="activeTab = 'info'"
                 :class="[
-                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300 relative',
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 relative flex flex-col items-center gap-1',
                   activeTab === 'info'
                     ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
                     : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'info' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'info' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
                   <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
                   <path d="M10 9H8"/>
                   <path d="M16 13H8"/>
                   <path d="M16 17H8"/>
                 </svg>
-                Información
+                <span class="text-xs">Información</span>
               </button>
               <button
                 @click="activeTab = 'instructions'"
                 :class="[
-                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 flex flex-col items-center gap-1',
                   activeTab === 'instructions'
                     ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
                     : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'instructions' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'instructions' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
                   <path d="m9 12 2 2 4-4"/>
                 </svg>
-                Instrucciones
+                <span class="text-xs">Instrucciones</span>
+              </button>
+              <button
+                @click="activeTab = 'executions'"
+                :class="[
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 flex flex-col items-center gap-0.5',
+                  activeTab === 'executions'
+                    ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
+                    : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
+                ]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'executions' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"/>
+                  <path d="M6 9.01V9"/>
+                  <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"/>
+                </svg>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs">Ejecuciones</span>
+                  <span v-if="executions.length > 0" class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full">
+                    {{ executions.length }}
+                  </span>
+                </div>
               </button>
               <button
                 @click="activeTab = 'timeline'"
                 :class="[
-                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 flex flex-col items-center gap-1',
                   activeTab === 'timeline'
                     ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
                     : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'timeline' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'timeline' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M8 2v4"/>
                   <path d="M16 2v4"/>
                   <rect width="18" height="18" x="3" y="4" rx="2"/>
                   <path d="M3 10h18"/>
                 </svg>
-                Timeline
+                <span class="text-xs">Timeline</span>
               </button>
               <button
                 @click="activeTab = 'documents'"
                 :class="[
-                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 flex flex-col items-center gap-0.5',
                   activeTab === 'documents'
                     ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
                     : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'documents' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'documents' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                 </svg>
-                Documentos
-                <span v-if="documents.length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full shadow-sm">
-                  {{ documents.length }}
-                </span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs">Documentos</span>
+                  <span v-if="documents.length > 0" class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full">
+                    {{ documents.length }}
+                  </span>
+                </div>
               </button>
               <button
                 @click="activeTab = 'messages'"
                 :class="[
-                  'group flex-1 py-4 px-6 text-center border-b-3 font-semibold transition-all duration-300',
+                  'group flex-1 py-3 px-2 text-center border-b-3 font-semibold transition-all duration-300 flex flex-col items-center gap-0.5',
                   activeTab === 'messages'
                     ? 'border-[#D4AF37] text-[#D4AF37] bg-white shadow-sm'
                     : 'border-transparent text-gray-500 hover:text-[#0A1F44] hover:bg-white/50'
                 ]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5 inline-block mr-2', activeTab === 'messages' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" :class="['w-5 h-5', activeTab === 'messages' ? '' : 'group-hover:scale-110 transition-transform']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
-                Mensajes
-                <span v-if="messages.filter(m => !m.isRead && m.senderType === 'admin').length > 0" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full shadow-sm animate-pulse">
-                  {{ messages.filter(m => !m.isRead && m.senderType === 'admin').length }}
-                </span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs">Mensajes</span>
+                  <span v-if="messages.filter(m => !m.isRead && m.senderType === 'admin').length > 0" class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full animate-pulse">
+                    {{ messages.filter(m => !m.isRead && m.senderType === 'admin').length }}
+                  </span>
+                </div>
               </button>
             </nav>
           </div>
@@ -666,6 +841,126 @@ onMounted(() => {
                       <span class="px-3 py-1 bg-[#D4AF37] text-[#0A1F44] rounded-full text-sm font-bold">
                         {{ ben.percentage }}%
                       </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Executions Tab -->
+            <div v-if="activeTab === 'executions'" class="space-y-6">
+              <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6 shadow-sm">
+                <div class="flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                  <div class="ml-3 text-sm text-blue-700">
+                    <p class="font-semibold">Seguimiento de Ejecuciones</p>
+                    <p class="mt-1">Aquí puedes ver el progreso de las instrucciones que están siendo ejecutadas por nuestro equipo administrativo.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading State -->
+              <div v-if="loadingExecutions" class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div>
+              </div>
+
+              <!-- Empty State -->
+              <div v-else-if="!executions || executions.length === 0" class="text-center py-12">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9.01V9"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"/>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Sin ejecuciones aún</h3>
+                <p class="mt-1 text-sm text-gray-500">No se han ejecutado instrucciones para este POA todavía.</p>
+              </div>
+
+              <!-- Executions List -->
+              <div v-else class="space-y-4">
+                <div
+                  v-for="execution in executions"
+                  :key="execution.id"
+                  class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+                >
+                  <!-- Header -->
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                          {{ getExecutionTypeLabel(execution.executionType) }}
+                        </span>
+                        <span
+                          :class="[
+                            'px-2 py-1 text-xs font-semibold rounded-full border',
+                            getExecutionStatusColor(execution.status)
+                          ]"
+                        >
+                          {{ getExecutionStatusLabel(execution.status) }}
+                        </span>
+                      </div>
+                      <p class="text-sm text-gray-600">
+                        Ejecutado por: <span class="font-semibold text-gray-900">{{ execution.executedByUser?.firstName }} {{ execution.executedByUser?.lastName }}</span>
+                      </p>
+                    </div>
+                    <div class="text-right text-sm text-gray-500">
+                      <p>{{ new Date(execution.executedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+                      <p class="text-xs">{{ new Date(execution.executedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Description -->
+                  <div class="mb-4">
+                    <p class="text-gray-700 leading-relaxed">{{ execution.description }}</p>
+                  </div>
+
+                  <!-- Details Grid -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div v-if="execution.amount" class="bg-gray-50 p-3 rounded-lg">
+                      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Monto</p>
+                      <p class="text-lg font-bold text-gray-900">${{ Number(execution.amount).toLocaleString('es-ES', { minimumFractionDigits: 2 }) }}</p>
+                    </div>
+                    <div v-if="execution.recipient" class="bg-gray-50 p-3 rounded-lg">
+                      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Destinatario</p>
+                      <p class="text-sm font-semibold text-gray-900">{{ execution.recipient }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Completion Date -->
+                  <div v-if="execution.completedAt" class="mb-4">
+                    <div class="bg-green-50 border-l-4 border-green-500 p-3 rounded">
+                      <p class="text-xs font-semibold text-green-700 uppercase tracking-wide mb-1">Completado</p>
+                      <p class="text-sm text-green-700">
+                        {{ new Date(execution.completedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Notes -->
+                  <div v-if="execution.notes" class="mb-4">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Notas</p>
+                    <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{{ execution.notes }}</p>
+                  </div>
+
+                  <!-- Proof Documents -->
+                  <div v-if="execution.proofDocuments && execution.proofDocuments.length > 0" class="mt-4">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Documentos de Evidencia</p>
+                    <div class="flex flex-wrap gap-2">
+                      <a
+                        v-for="(doc, index) in execution.proofDocuments"
+                        :key="index"
+                        :href="doc"
+                        target="_blank"
+                        class="inline-flex items-center px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        Documento {{ index + 1 }}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -932,126 +1227,135 @@ onMounted(() => {
 
             <!-- Messages Tab -->
             <div v-if="activeTab === 'messages'" class="space-y-6">
-              <!-- Header con botón para enviar mensaje -->
+              <!-- Header con botón para crear hilo -->
               <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold text-[#0A1F44]">Mensajes</h2>
-                <button
-                  @click="showMessageModal = true"
-                  class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  </svg>
-                  Nuevo Mensaje
-                </button>
+                <h2 class="text-2xl font-bold text-[#0A1F44]">Hilos de Conversación</h2>
+                <div class="flex gap-3">
+                  <button
+                    @click="loadThreads"
+                    :disabled="loadingThreads"
+                    class="flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-5 h-5"
+                      :class="{ 'animate-spin': loadingThreads }"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    Refrescar
+                  </button>
+                  <button
+                    @click="showCreateThreadModal = true"
+                    class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Nuevo Hilo
+                  </button>
+                </div>
               </div>
 
               <!-- Loading state -->
-              <div v-if="loadingMessages" class="text-center py-12">
+              <div v-if="loadingThreads" class="text-center py-12">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
-                <p class="text-gray-600">Cargando mensajes...</p>
+                <p class="text-gray-600">Cargando hilos...</p>
               </div>
 
               <!-- Empty state -->
-              <div v-else-if="messages.length === 0" class="text-center py-16">
+              <div v-else-if="threads.length === 0" class="text-center py-16">
                 <div class="mx-auto w-24 h-24 mb-6 rounded-full bg-gray-100 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">No hay mensajes</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No hay hilos de conversación</h3>
                 <p class="text-gray-600 max-w-md mx-auto">
-                  Aún no tienes mensajes. Puedes enviar una consulta o pregunta al administrador haciendo clic en "Nuevo Mensaje".
+                  Aún no tienes hilos de conversación. Crea un nuevo hilo para comunicarte con el administrador.
                 </p>
               </div>
 
-              <!-- Messages list -->
-              <div v-else class="space-y-2 max-h-[600px] overflow-y-auto">
+              <!-- Threads list -->
+              <div v-else class="space-y-3">
                 <div
-                  v-for="msg in messages"
-                  :key="msg.id"
-                  class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+                  v-for="thread in threads"
+                  :key="thread.id"
+                  class="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer"
                   :class="{
-                    'border-l-4 border-l-blue-500': msg.senderType === 'admin',
-                    'border-l-4 border-l-gray-300': msg.senderType === 'client',
-                    'ring-2 ring-blue-200': !msg.isRead && msg.senderType === 'admin'
+                    'ring-2 ring-[#D4AF37]': thread.unreadCount > 0,
+                    'border-l-4 border-l-blue-500': thread.status === 'open',
+                    'border-l-4 border-l-gray-300': thread.status === 'closed'
                   }"
+                  @click="handleOpenThread(thread.id)"
                 >
-                  <div class="p-3">
-                    <!-- Header compacto en una línea -->
-                    <div class="flex items-center justify-between mb-2">
-                      <!-- Lado izquierdo: Emisor, estado y asunto -->
-                      <div class="flex items-center gap-2 flex-1 min-w-0">
-                        <span
-                          class="px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0"
-                          :class="{
-                            'bg-blue-100 text-blue-800': msg.senderType === 'admin',
-                            'bg-gray-100 text-gray-800': msg.senderType === 'client'
-                          }"
-                        >
-                          {{ msg.senderType === 'admin' ? 'Admin' : 'Yo' }}
-                        </span>
-                        <span v-if="!msg.isRead && msg.senderType === 'admin'" class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-[10px] font-bold animate-pulse flex-shrink-0">
-                          Nuevo
-                        </span>
-                        <span
-                          class="font-bold text-sm truncate"
-                          :class="{ 'text-blue-700': !msg.isRead && msg.senderType === 'admin' }"
-                          :title="msg.subject"
-                        >
-                          {{ msg.subject }}
-                        </span>
-                      </div>
-
-                      <!-- Lado derecho: Tipo y fecha -->
-                      <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
-                        <span class="px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full text-[10px] font-medium hidden sm:inline-flex">
-                          {{
-                            msg.type === 'request_document' ? 'Doc' :
-                            msg.type === 'status_update' ? 'Estado' :
-                            msg.type === 'question' ? 'Pregunta' : 'General'
-                          }}
-                        </span>
-                        <span class="text-[11px] text-gray-500 whitespace-nowrap">
-                          {{ new Date(msg.createdAt).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
-                        </span>
+                  <div class="p-4">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-2">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <span
+                            class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                            :class="{
+                              'bg-green-100 text-green-800': thread.status === 'open',
+                              'bg-gray-100 text-gray-800': thread.status === 'closed'
+                            }"
+                          >
+                            {{ thread.status === 'open' ? 'Abierto' : 'Cerrado' }}
+                          </span>
+                          <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-medium">
+                            {{ thread.type === 'general' ? 'General' :
+                               thread.type === 'question' ? 'Pregunta' :
+                               thread.type === 'request_document' ? 'Documentos' :
+                               'Actualización' }}
+                          </span>
+                          <span v-if="thread.unreadCount > 0" class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-[10px] font-bold animate-pulse">
+                            {{ thread.unreadCount }} nuevos
+                          </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-[#0A1F44] truncate" :title="thread.subject">
+                          {{ thread.subject }}
+                        </h4>
                       </div>
                     </div>
 
-                    <!-- Mensaje con límite de líneas -->
-                    <p class="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed mb-2 line-clamp-3">{{ msg.message }}</p>
-
-                    <!-- Footer compacto -->
-                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                      <div v-if="msg.sender" class="text-[10px] text-gray-600 truncate flex-1 min-w-0">
-                        <span class="font-medium">De:</span>
-                        {{ msg.sender.firstName }} {{ msg.sender.lastName }}
+                    <!-- Stats -->
+                    <div class="flex items-center gap-4 text-xs text-gray-600 mt-3">
+                      <div class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        {{ thread.messageCount }} mensajes
                       </div>
-
-                      <div class="flex items-center gap-1 flex-shrink-0 ml-2">
-                        <!-- Botón marcar como leído (solo mensajes del admin) -->
-                        <button
-                          v-if="!msg.isRead && msg.senderType === 'admin'"
-                          @click="handleMarkAsRead(msg.id)"
-                          class="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium text-[10px]"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"/>
-                          </svg>
-                          Leído
-                        </button>
-                        <!-- Botón eliminar (solo mensajes del cliente no leídos) -->
-                        <button
-                          v-if="!msg.isRead && msg.senderType === 'client'"
-                          @click="handleDeleteMessage(msg.id)"
-                          class="flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors font-medium text-[10px]"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                          </svg>
-                          Eliminar
-                        </button>
+                      <div v-if="thread.lastMessageAt" class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        {{ new Date(thread.lastMessageAt).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
                       </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100" @click.stop>
+                      <button
+                        v-if="thread.status === 'open'"
+                        @click="handleCloseThread(thread.id)"
+                        class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Cerrar
+                      </button>
+                      <button
+                        v-else
+                        @click="handleReopenThread(thread.id)"
+                        class="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                      >
+                        Reabrir
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1353,7 +1657,7 @@ onMounted(() => {
       @cancel="showDeleteDocumentModal = false"
     />
 
-    <!-- Message Modal -->
+    <!-- Message Modal (Legacy) -->
     <div v-if="showMessageModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
@@ -1413,6 +1717,175 @@ onMounted(() => {
           >
             Enviar Mensaje
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Thread Modal -->
+    <div v-if="showCreateThreadModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-2xl font-bold text-[#0A1F44]">Crear Nuevo Hilo</h3>
+          <p class="text-gray-600 mt-1">Inicia una nueva conversación con el administrador</p>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <!-- Tipo de hilo -->
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Tipo de Hilo *</label>
+            <select
+              v-model="threadForm.type"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+            >
+              <option :value="ThreadType.GENERAL">General</option>
+              <option :value="ThreadType.QUESTION">Pregunta</option>
+              <option :value="ThreadType.REQUEST_DOCUMENT">Solicitud de Documento</option>
+              <option :value="ThreadType.STATUS_UPDATE">Actualización de Estado</option>
+            </select>
+          </div>
+
+          <!-- Asunto -->
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Asunto *</label>
+            <input
+              v-model="threadForm.subject"
+              type="text"
+              placeholder="Ej: Consulta sobre documentos requeridos"
+              maxlength="255"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+            />
+            <p class="text-xs text-gray-500 mt-2">
+              Este será el tema principal del hilo de conversación
+            </p>
+          </div>
+        </div>
+
+        <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+          <button
+            @click="showCreateThreadModal = false"
+            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="handleCreateThread"
+            class="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105"
+          >
+            Crear Hilo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thread Detail Modal -->
+    <div v-if="showThreadDetailModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-200 flex-shrink-0">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-bold"
+                  :class="{
+                    'bg-green-100 text-green-800': currentThread?.status === 'open',
+                    'bg-gray-100 text-gray-800': currentThread?.status === 'closed'
+                  }"
+                >
+                  {{ currentThread?.status === 'open' ? 'Abierto' : 'Cerrado' }}
+                </span>
+                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  {{ currentThread?.type === 'general' ? 'General' :
+                     currentThread?.type === 'question' ? 'Pregunta' :
+                     currentThread?.type === 'request_document' ? 'Documentos' :
+                     'Actualización' }}
+                </span>
+              </div>
+              <h3 class="text-2xl font-bold text-[#0A1F44]">{{ currentThread?.subject }}</h3>
+              <p class="text-sm text-gray-600 mt-1">
+                {{ currentThread?.messageCount || 0 }} mensajes
+              </p>
+            </div>
+            <button
+              @click="showThreadDetailModal = false"
+              class="text-gray-400 hover:text-gray-600 transition-colors p-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+          <div v-if="!currentThread?.messages || currentThread.messages.length === 0" class="text-center py-12">
+            <div class="mx-auto w-20 h-20 mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <p class="text-gray-600">No hay mensajes en este hilo aún.</p>
+            <p class="text-sm text-gray-500 mt-1">Envía el primer mensaje para iniciar la conversación.</p>
+          </div>
+
+          <div v-else class="space-y-4">
+            <div
+              v-for="msg in currentThread.messages"
+              :key="msg.id"
+              class="flex"
+              :class="msg.senderType === 'client' ? 'justify-end' : 'justify-start'"
+            >
+              <div
+                class="max-w-[70%] rounded-lg p-4 shadow-sm"
+                :class="{
+                  'bg-gradient-to-br from-[#D4AF37] to-[#B8941F] text-white': msg.senderType === 'client',
+                  'bg-gray-100 text-gray-900': msg.senderType === 'admin'
+                }"
+              >
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs font-bold" :class="msg.senderType === 'client' ? 'text-white/90' : 'text-gray-600'">
+                    {{ msg.senderType === 'admin' ? 'Administrador' : 'Tú' }}
+                  </span>
+                  <span class="text-[10px]" :class="msg.senderType === 'client' ? 'text-white/70' : 'text-gray-500'">
+                    {{ new Date(msg.createdAt).toLocaleString('es-ES', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+                  </span>
+                </div>
+                <p class="text-sm whitespace-pre-wrap">{{ msg.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div v-if="currentThread?.status === 'open'" class="flex-shrink-0 border-t border-gray-200 p-4">
+          <div class="flex gap-3">
+            <textarea
+              v-model="threadMessageForm.message"
+              placeholder="Escribe tu mensaje..."
+              rows="3"
+              class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all resize-none"
+              @keydown.ctrl.enter="handleSendThreadMessage"
+            ></textarea>
+            <button
+              @click="handleSendThreadMessage"
+              :disabled="!threadMessageForm.message.trim()"
+              class="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:from-[#B8941F] hover:to-[#D4AF37] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none self-end"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">
+            Presiona Ctrl + Enter para enviar
+          </p>
+        </div>
+        <div v-else class="flex-shrink-0 border-t border-gray-200 p-4 bg-gray-50">
+          <p class="text-sm text-center text-gray-600">
+            Este hilo está cerrado. Reábrelo para continuar la conversación.
+          </p>
         </div>
       </div>
     </div>
