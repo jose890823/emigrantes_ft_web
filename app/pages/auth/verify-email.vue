@@ -10,6 +10,8 @@ const { verifyEmail, resendOtp } = useAuth()
 const toast = useToast()
 
 const email = ref((route.query.email as string) || '')
+const selectedPlan = computed(() => route.query.plan as string | undefined)
+const selectedPaymentType = computed(() => route.query.payment as string | undefined)
 const otpCode = ref(['', '', '', '', '', ''])
 const isLoading = ref(false)
 const isResending = ref(false)
@@ -88,7 +90,14 @@ const handleVerify = async () => {
 
     if (result.success) {
       toast.success('¡Email verificado!', 'Ahora puedes iniciar sesión')
-      router.push('/auth/login')
+      // Redirigir a login con info del plan si existe
+      router.push({
+        path: '/auth/login',
+        query: {
+          ...(selectedPlan.value && { plan: selectedPlan.value }),
+          ...(selectedPaymentType.value && { payment: selectedPaymentType.value }),
+        }
+      })
     } else {
       toast.error('Error', result.error || 'Código incorrecto')
       // Limpiar código

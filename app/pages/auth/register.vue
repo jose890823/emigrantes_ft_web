@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RegisterRequest } from '~/types/api'
+import type { RegisterRequest, SubscriptionPlan, InitialPaymentType } from '~/types/api'
 
 definePageMeta({
   layout: 'auth',
@@ -9,6 +9,20 @@ definePageMeta({
 const { register } = useAuth()
 const toast = useToast()
 const router = useRouter()
+const route = useRoute()
+
+// Obtener plan y tipo de pago de los query params
+const selectedPlan = computed(() => route.query.plan as SubscriptionPlan | undefined)
+const selectedPaymentType = computed(() => (route.query.payment as InitialPaymentType) || 'single')
+
+// Información de planes
+const planInfo: Record<SubscriptionPlan, { name: string; monthlyPrice: number; initialPayment: number; installmentAmount: number }> = {
+  basic: { name: 'Plan Básico', monthlyPrice: 14, initialPayment: 129, installmentAmount: 43 },
+  standard: { name: 'Plan Estándar', monthlyPrice: 24, initialPayment: 199, installmentAmount: 66.33 },
+  premium: { name: 'Plan Premium', monthlyPrice: 39, initialPayment: 299, installmentAmount: 99.67 },
+}
+
+const currentPlanInfo = computed(() => selectedPlan.value ? planInfo[selectedPlan.value] : null)
 
 const isLoading = ref(false)
 const showPassword = ref(false)
@@ -108,10 +122,14 @@ const handleRegister = async () => {
         '¡Registro exitoso!',
         'Revisa tu email para verificar tu cuenta'
       )
-      // Redirigir a verificación de email
+      // Redirigir a verificación de email con info del plan
       router.push({
         path: '/auth/verify-email',
-        query: { email: form.email }
+        query: {
+          email: form.email,
+          ...(selectedPlan.value && { plan: selectedPlan.value }),
+          ...(selectedPaymentType.value && { payment: selectedPaymentType.value }),
+        }
       })
     } else {
       errors.general = result.error || 'Error al registrarse'
@@ -142,6 +160,28 @@ const handleRegister = async () => {
         <p class="text-gray-600">
           Protege tu sacrificio con Emigrantes FT
         </p>
+      </div>
+
+      <!-- Plan seleccionado -->
+      <div v-if="currentPlanInfo" class="bg-gradient-to-r from-[#0A1F44] to-blue-800 rounded-2xl shadow-xl p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-300">Plan seleccionado:</p>
+            <h3 class="text-xl font-bold">{{ currentPlanInfo.name }}</h3>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-[#D4AF37]">${{ currentPlanInfo.monthlyPrice }}<span class="text-sm font-normal">/mes</span></p>
+            <p class="text-sm text-gray-300">
+              + ${{ selectedPaymentType === 'installments' ? currentPlanInfo.installmentAmount.toFixed(2) + ' x 3 meses' : currentPlanInfo.initialPayment + ' inicial' }}
+            </p>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-white/20">
+          <NuxtLink to="/planes" class="text-sm text-[#D4AF37] hover:text-yellow-300 flex items-center gap-1">
+            <Icon name="lucide:arrow-left" class="w-4 h-4" />
+            Cambiar plan
+          </NuxtLink>
+        </div>
       </div>
 
       <!-- Formulario -->

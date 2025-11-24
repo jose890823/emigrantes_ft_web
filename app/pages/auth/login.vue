@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LoginRequest } from '~/types/api'
+import type { LoginRequest, SubscriptionPlan, InitialPaymentType } from '~/types/api'
 
 definePageMeta({
   layout: 'auth',
@@ -9,6 +9,11 @@ definePageMeta({
 const { login } = useAuth()
 const toast = useToast()
 const router = useRouter()
+const route = useRoute()
+
+// Obtener plan y tipo de pago de los query params
+const selectedPlan = computed(() => route.query.plan as SubscriptionPlan | undefined)
+const selectedPaymentType = computed(() => (route.query.payment as InitialPaymentType) || 'single')
 
 const isLoading = ref(false)
 const showPassword = ref(false)
@@ -63,7 +68,18 @@ const handleLogin = async () => {
 
     if (result.success) {
       toast.success('¡Bienvenido!', 'Has iniciado sesión correctamente')
-      router.push('/dashboard')
+      // Redirigir a checkout si hay un plan seleccionado, sino al dashboard
+      if (selectedPlan.value) {
+        router.push({
+          path: '/subscription/checkout',
+          query: {
+            plan: selectedPlan.value,
+            payment: selectedPaymentType.value,
+          }
+        })
+      } else {
+        router.push('/dashboard')
+      }
     } else {
       errors.general = result.error || 'Error al iniciar sesión'
       toast.error('Error', result.error || 'Credenciales incorrectas')

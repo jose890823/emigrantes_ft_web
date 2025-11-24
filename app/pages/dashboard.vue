@@ -5,6 +5,7 @@ definePageMeta({
 
 const { user } = useAuth()
 const api = useApi()
+const { currentSubscription, fetchMySubscription, getPlanText, getStatusText, hasActiveSubscription } = useSubscription()
 
 // Animation state
 const mounted = ref(false)
@@ -18,6 +19,7 @@ const stats = ref({
 })
 
 const loading = ref(true)
+const subscriptionLoading = ref(true)
 
 // Load dashboard stats
 const loadStats = async () => {
@@ -34,9 +36,35 @@ const loadStats = async () => {
   }
 }
 
+// Load subscription info
+const loadSubscription = async () => {
+  try {
+    subscriptionLoading.value = true
+    await fetchMySubscription()
+  } catch (error) {
+    console.error('Error loading subscription:', error)
+  } finally {
+    subscriptionLoading.value = false
+  }
+}
+
+// Get subscription status color
+const getStatusColor = (status: string) => {
+  const colors: Record<string, string> = {
+    active: 'bg-green-100 text-green-700 border-green-200',
+    pending_payment: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    pending_contract: 'bg-blue-100 text-blue-700 border-blue-200',
+    cancelled: 'bg-red-100 text-red-700 border-red-200',
+    suspended: 'bg-orange-100 text-orange-700 border-orange-200',
+    expired: 'bg-gray-100 text-gray-700 border-gray-200',
+    past_due: 'bg-red-100 text-red-700 border-red-200',
+  }
+  return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200'
+}
+
 onMounted(async () => {
-  // Load stats
-  await loadStats()
+  // Load stats and subscription in parallel
+  await Promise.all([loadStats(), loadSubscription()])
 
   // Trigger animation
   setTimeout(() => {
@@ -70,6 +98,120 @@ onMounted(async () => {
             <p class="text-gray-600 mt-1 text-sm">
               Gestiona tus poderes notariales de forma segura
             </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Status Banner -->
+      <div
+        v-if="!subscriptionLoading"
+        class="mb-8 transition-all duration-700 transform"
+        :class="mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'"
+        style="transition-delay: 50ms"
+      >
+        <!-- No Subscription - CTA Banner -->
+        <div v-if="!currentSubscription" class="bg-gradient-to-r from-[#0A1F44] to-blue-800 rounded-2xl shadow-xl p-6 text-white relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div class="relative flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center">
+                <svg class="w-8 h-8 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold">¡Activa tu Suscripción!</h3>
+                <p class="text-gray-300 text-sm">Protege tu patrimonio con nuestros planes desde $14/mes</p>
+              </div>
+            </div>
+            <NuxtLink
+              to="/planes"
+              class="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-amber-500 text-[#0A1F44] font-bold rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 whitespace-nowrap"
+            >
+              Ver Planes
+            </NuxtLink>
+          </div>
+        </div>
+
+        <!-- Has Subscription - Status Card -->
+        <div v-else class="bg-white rounded-2xl shadow-lg p-6">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-lg font-bold text-[#0A1F44]">{{ getPlanText(currentSubscription.planType) }}</h3>
+                  <span :class="['px-2 py-0.5 text-xs font-semibold rounded-full border', getStatusColor(currentSubscription.status)]">
+                    {{ getStatusText(currentSubscription.status) }}
+                  </span>
+                </div>
+                <p class="text-gray-500 text-sm">
+                  <span v-if="currentSubscription.status === 'active'">
+                    Próximo cobro: {{ currentSubscription.nextBillingDate ? new Date(currentSubscription.nextBillingDate).toLocaleDateString('es-ES') : 'Pendiente' }}
+                  </span>
+                  <span v-else-if="currentSubscription.status === 'pending_contract'">
+                    Esperando firma del contrato
+                  </span>
+                  <span v-else-if="currentSubscription.status === 'pending_payment'">
+                    Completar el pago para activar
+                  </span>
+                  <span v-else>
+                    ${{ currentSubscription.monthlyPrice }}/mes
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden md:block">
+                <p class="text-2xl font-bold text-[#D4AF37]">${{ currentSubscription.monthlyPrice }}</p>
+                <p class="text-xs text-gray-500">por mes</p>
+              </div>
+              <NuxtLink
+                v-if="currentSubscription.status === 'pending_payment'"
+                :to="`/subscription/checkout?plan=${currentSubscription.planType}&payment=${currentSubscription.initialPaymentType}`"
+                class="px-4 py-2 bg-[#D4AF37] text-[#0A1F44] font-semibold rounded-lg hover:bg-[#B8941F] transition-colors"
+              >
+                Completar Pago
+              </NuxtLink>
+              <NuxtLink
+                v-else
+                to="/subscription"
+                class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Ver Detalles
+              </NuxtLink>
+            </div>
+          </div>
+
+          <!-- Progress bar for installments -->
+          <div v-if="currentSubscription.initialPaymentType === 'installments' && currentSubscription.initialPaymentStatus !== 'completed'" class="mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-600">Progreso del pago inicial</span>
+              <span class="text-sm font-semibold text-[#0A1F44]">{{ currentSubscription.installmentsPaid }}/{{ currentSubscription.totalInstallments }} cuotas</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div
+                class="bg-gradient-to-r from-[#D4AF37] to-amber-500 h-2 rounded-full transition-all duration-500"
+                :style="{ width: `${(currentSubscription.installmentsPaid / currentSubscription.totalInstallments) * 100}%` }"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Loading State -->
+      <div v-else class="mb-8">
+        <div class="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-gray-200 rounded-xl"></div>
+            <div class="flex-1">
+              <div class="h-5 bg-gray-200 rounded w-32 mb-2"></div>
+              <div class="h-4 bg-gray-200 rounded w-48"></div>
+            </div>
           </div>
         </div>
       </div>

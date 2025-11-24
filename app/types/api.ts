@@ -274,3 +274,117 @@ export interface NotificationFilterParams {
   status?: NotificationStatus
   category?: NotificationCategory
 }
+
+// Tipos para el sistema de suscripciones y planes
+export type SubscriptionPlan = 'basic' | 'standard' | 'premium'
+export type SubscriptionStatus = 'pending_payment' | 'pending_contract' | 'active' | 'cancelled' | 'suspended' | 'expired' | 'past_due'
+export type InitialPaymentType = 'single' | 'installments'
+export type InitialPaymentStatus = 'pending' | 'partial' | 'completed' | 'failed'
+export type PaymentMethod = 'stripe' | 'paypal' | 'zelle' | 'other'
+
+export interface Plan {
+  id: string
+  type: SubscriptionPlan
+  name: string
+  description: string
+  monthlyPrice: number
+  initialPayment: number
+  installmentAmount: number
+  installmentCount: number
+  features: string[]
+  isRecommended: boolean
+  icon: string
+  status: 'active' | 'inactive' | 'deprecated'
+  displayOrder: number
+  stripeProductId?: string
+  stripeMonthlyPriceId?: string
+  stripeInitialPriceId?: string
+  stripeInstallmentPriceId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Subscription {
+  id: string
+  userId: string
+  planId?: string
+  planType: SubscriptionPlan
+  status: SubscriptionStatus
+
+  // Precios
+  monthlyPrice: number
+  currency: string
+
+  // Pago inicial
+  initialPaymentType: InitialPaymentType
+  initialPaymentAmount: number
+  initialPaymentStatus: InitialPaymentStatus
+  installmentsPaid: number
+  totalInstallments: number
+  installmentAmount: number
+  nextInstallmentDate?: string
+
+  // Stripe
+  paymentMethod: PaymentMethod
+  stripeSubscriptionId?: string
+  stripeCustomerId?: string
+  stripePaymentMethodId?: string
+  stripeCheckoutSessionId?: string
+
+  // Fechas
+  startDate?: string
+  nextBillingDate?: string
+  cancelledAt?: string
+  cancellationReason?: string
+  expiresAt?: string
+
+  // Contrato
+  contractSigned: boolean
+  contractSignedAt?: string
+  docusignEnvelopeId?: string
+  contractUrl?: string
+
+  // Relaciones
+  user?: User
+  plan?: Plan
+
+  // Auditoría
+  notes?: string
+  metadata?: Record<string, any>
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateCheckoutSessionRequest {
+  planType: SubscriptionPlan
+  initialPaymentType: InitialPaymentType
+  successUrl: string
+  cancelUrl: string
+}
+
+export interface CheckoutSessionResponse {
+  sessionId: string
+  checkoutUrl: string
+}
+
+export interface Payment {
+  id: string
+  userId: string
+  subscriptionId?: string
+  amount: number
+  currency: string
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'refunded' | 'partially_refunded'
+  provider: 'stripe' | 'paypal' | 'zelle' | 'other'
+  transactionId?: string
+  invoiceNumber: string
+  invoicePdfUrl?: string
+  description: string
+  paidAt?: string
+  refundedAt?: string
+  refundedAmount: number
+  refundReason?: string
+  metadata?: Record<string, any>
+  errorMessage?: string
+  createdAt: string
+  updatedAt: string
+}
