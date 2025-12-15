@@ -5,8 +5,8 @@ import { openWhatsApp, getWhatsAppContactMessage } from '~/utils/whatsapp'
 const services = [
   {
     icon: 'lucide:shield-check',
-    title: 'Representación de Continuidad Financiera',
-    description: 'Garantizamos que tus decisiones financieras se respeten incluso si no puedes ejecutarlas personalmente.',
+    title: 'Representación para la Continuidad Financiera',
+    description: 'Te ayudamos a que tus decisiones financieras se respeten aun cuando no puedas ejecutarlas personalmente, dejando tus instrucciones por escrito y designando un representante legal de confianza.',
     benefits: 'Mantienes el control de tus cuentas y propiedades desde cualquier parte del mundo.',
     image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop',
   },
@@ -41,8 +41,8 @@ const services = [
   {
     icon: 'lucide:building-2',
     title: 'Asistencia de Legalidad y Reconocimiento Bancario',
-    description: 'Brindamos acompañamiento para facilitar la aceptación del POA duradero por parte de bancos y entidades financieras.',
-    benefits: 'Mayor probabilidad de aceptación y ejecución fluida.',
+    description: 'Brindamos acompañamiento administrativo y documental para que tu contrato y tus instrucciones sean entendidos y evaluados por bancos y entidades financieras. Cuando se requiere asesoría jurídica específica, coordinamos con abogados externos licenciados.',
+    benefits: 'Mejor preparación y presentación de tu documentación, para una evaluación más rápida y clara por parte del banco.',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
   },
 ]
@@ -153,7 +153,7 @@ const handleWhatsAppClick = () => {
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
                   <path d="m9 12 2 2 4-4"/>
                 </svg>
-                <span class="text-[#0A1F44] font-semibold text-sm">100% Respaldado por la Ley de Florida</span>
+                <span class="text-[#0A1F44] font-semibold text-sm">Enmarcado en la Ley de Florida</span>
               </div>
             </div>
 
@@ -167,7 +167,7 @@ const handleWhatsAppClick = () => {
                 </span>
               </h1>
               <p class="text-xl sm:text-2xl text-gray-700 font-normal leading-relaxed max-w-3xl mx-auto">
-                Mantén <strong class="text-[#0A1F44] font-bold">poder y control total</strong> sobre tus bienes desde cualquier parte del mundo
+                Mantén <strong class="text-[#0A1F44] font-bold">poder y control</strong> sobre tus cuentas y bienes en EE.UU., sin importar en qué parte del mundo estés.
               </p>
             </div>
 
@@ -180,7 +180,7 @@ const handleWhatsAppClick = () => {
                   </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
-                  <strong class="text-[#0A1F44]">Poder Notarial Duradero (POA)</strong> que te protege ante deportación, detención o incapacidad
+                  <strong class="text-[#0A1F44]">Contrato marco legal:</strong> deja por escrito tu voluntad para que tus bienes y ahorros sean administrados y, cuando corresponda, entregados según tus instrucciones, estés donde estés.
                 </p>
               </div>
               <div class="flex items-start gap-3 text-left">
@@ -190,7 +190,7 @@ const handleWhatsAppClick = () => {
                   </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
-                  <strong class="text-[#0A1F44]">Control total garantizado:</strong> Tus instrucciones se ejecutan solo cuando tú lo ordenes
+                  <strong class="text-[#0A1F44]">Control claro sobre tus decisiones:</strong> tus instrucciones se ejecutan solo según lo que dejes firmado y autorizado.
                 </p>
               </div>
               <div class="flex items-start gap-3 text-left">
@@ -200,7 +200,7 @@ const handleWhatsAppClick = () => {
                   </svg>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
-                  <strong class="text-[#0A1F44]">Transparencia total:</strong> Reportes documentados y auditoría completa de cada gestión
+                  <strong class="text-[#0A1F44]">Transparencia total:</strong> reportes documentados y auditoría completa de cada gestión, sin que pierdas la propiedad de tus bienes.
                 </p>
               </div>
             </div>
@@ -319,7 +319,7 @@ const handleWhatsAppClick = () => {
                 <path d="m9 12 2 2 4-4"/>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3">Control Total Garantizado</h3>
+            <h3 class="text-xl font-bold text-white mb-3">Control Claro sobre tus Decisiones</h3>
             <p class="text-gray-300 leading-relaxed">
               Actuamos únicamente bajo tus instrucciones verificadas. Tú mantienes el 100% del control sobre tus bienes.
             </p>
@@ -546,7 +546,7 @@ const handleWhatsAppClick = () => {
             <span class="text-[#D4AF37]">Transparente</span>
           </h2>
           <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-            En solo 5 pasos protegemos tu sacrificio y garantizamos tu tranquilidad
+            En solo 5 pasos protegemos tu sacrificio y te ayudamos a tener tranquilidad
           </p>
         </div>
 
@@ -762,7 +762,7 @@ const handleWhatsAppClick = () => {
             <span class="text-[#D4AF37]">Emigrantes FT?</span>
           </h2>
           <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-            Situaciones reales donde protegemos tu sacrificio y garantizamos tu tranquilidad
+            Situaciones reales donde protegemos tu sacrificio y te ayudamos a tener tranquilidad
           </p>
         </div>
 
@@ -803,14 +803,14 @@ const handleWhatsAppClick = () => {
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Emergencia Médica</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
-              En caso de incapacidad temporal o permanente, tu POA duradero garantiza que tus decisiones financieras se respeten y ejecuten correctamente.
+              En caso de incapacidad temporal o permanente, tu POA duradero ayuda a que tus decisiones financieras se respeten y ejecuten correctamente.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
                 <path d="m9 12 2 2 4-4"/>
               </svg>
-              <span>Continuidad garantizada</span>
+              <span>Enfoque en continuidad</span>
             </div>
           </div>
 
@@ -891,7 +891,7 @@ const handleWhatsAppClick = () => {
             </div>
             <h3 class="text-xl font-bold text-[#0A1F44] mb-4">Protección Familiar</h3>
             <p class="text-gray-600 leading-relaxed mb-4">
-              Asegura que tu familia tenga acceso a los recursos necesarios en caso de que no puedas proveerlos directamente por cualquier circunstancia.
+              Ayuda a que tu familia tenga acceso a los recursos necesarios en caso de que no puedas proveerlos directamente por cualquier circunstancia.
             </p>
             <div class="flex items-center gap-2 text-[#D4AF37] font-semibold text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

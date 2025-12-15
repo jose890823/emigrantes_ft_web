@@ -28,7 +28,7 @@ const plans: Plan[] = [
   {
     type: 'basic',
     name: 'Plan Básico',
-    description: 'Protección esencial para emigrantes que buscan asegurar sus activos.',
+    description: 'Protección esencial para emigrantes que buscan proteger sus activos.',
     monthlyPrice: 14,
     initialPayment: 129,
     installmentAmount: 43,
