@@ -7,6 +7,7 @@ definePageMeta({
 })
 
 const { register } = useAuth()
+const { getReferralCode, clearReferralCode, hasReferralCode } = useReferral()
 const toast = useToast()
 const router = useRouter()
 const route = useRoute()
@@ -14,6 +15,9 @@ const route = useRoute()
 // Obtener plan y tipo de pago de los query params
 const selectedPlan = computed(() => route.query.plan as SubscriptionPlan | undefined)
 const selectedPaymentType = computed(() => (route.query.payment as InitialPaymentType) || 'single')
+
+// Código de referido
+const referralCode = computed(() => getReferralCode())
 
 // Información de planes
 const planInfo: Record<SubscriptionPlan, { name: string; monthlyPrice: number; initialPayment: number; installmentAmount: number }> = {
@@ -115,9 +119,19 @@ const handleRegister = async () => {
 
   try {
     const { confirmPassword, ...registerData } = form
-    const result = await register(registerData)
+
+    // Incluir código de referido si existe
+    const dataToSend = {
+      ...registerData,
+      ...(referralCode.value && { referralCode: referralCode.value }),
+    }
+
+    const result = await register(dataToSend)
 
     if (result.success) {
+      // Limpiar código de referido después del registro exitoso
+      clearReferralCode()
+
       toast.success(
         '¡Registro exitoso!',
         'Revisa tu email para verificar tu cuenta'
@@ -160,6 +174,17 @@ const handleRegister = async () => {
         <p class="text-gray-600">
           Protege tu sacrificio con Emigrantes FT
         </p>
+      </div>
+
+      <!-- Referral Code Banner -->
+      <div v-if="referralCode" class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+          <Icon name="lucide:gift" class="w-5 h-5 text-green-600" />
+        </div>
+        <div>
+          <p class="text-sm font-medium text-green-800">Registro con código de referido</p>
+          <p class="text-xs text-green-600">Código: {{ referralCode }}</p>
+        </div>
       </div>
 
       <!-- Plan seleccionado -->

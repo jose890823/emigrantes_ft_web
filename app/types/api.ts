@@ -57,6 +57,7 @@ export interface RegisterRequest {
   firstName: string
   lastName: string
   phone: string
+  referralCode?: string
 }
 
 export interface LoginRequest {
